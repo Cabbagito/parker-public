@@ -1,0 +1,18 @@
+scheme: "Redline"
+author: "peki & Claude (parker theme system — the forge, night)"
+base00: "0C0B0D" # default background (near-black hull)
+base01: "161418" # lighter bg (status bars)
+base02: "221F24" # selection
+base03: "777075" # comments
+base04: "B0AAAE" # dim foreground (status)
+base05: "F2EFF0" # default foreground (white-ish gray)
+base06: "F8F6F7" # light foreground
+base07: "FFFFFF" # brightest (white decals)
+base08: "FF1524" # red (accent) — pure, not coral
+base09: "FF7A45" # orange
+base0A: "F5B342" # yellow / hazard amber
+base0B: "96B08E" # green (barely, diffs only)
+base0C: "9FC9D6" # cyan / baby blue
+base0D: "8FB8C4" # blue / baby blue
+base0E: "FF3D6E" # magenta (pulled toward the red)
+base0F: "B07A6A" # brown

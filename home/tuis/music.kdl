@@ -1,0 +1,11 @@
+// The music window: spotify-player above, a cava strip below. The bare
+// default_tab_template drops the tab/status bars — player chrome only.
+layout {
+    default_tab_template {
+        children
+    }
+    tab name="music" focus=true {
+        pane command="spotify_player" name="spotify"
+        pane command="cava" name="cava" size=8
+    }
+}

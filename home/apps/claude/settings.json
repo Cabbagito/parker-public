@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "attribution": {
+    "commit": ""
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-code-plugins": true
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "medium",
+  "autoUpdatesChannel": "latest",
+  "tui": "fullscreen",
+  "theme": "dark-ansi",
+  "editorMode": "normal",
+  "verbose": false,
+  "preferredNotifChannel": "ghostty",
+  "autoScrollEnabled": false,
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "useAutoModeDuringPlan": true,
+  "voiceEnabled": true,
+  "leftArrowOpensAgents": true,
+  "agentViewOpenOnStartup": false,
+  "model": "opus"
+}

@@ -1,0 +1,121 @@
+# CoolerControl fan curves — reference snapshot (Oct 2026, coolercontrold 5.0.1)
+#
+# NOT linked or applied by nix. The live copy is /etc/coolercontrol/config.toml,
+# mutable state owned by the daemon (apply_on_boot = true). This file exists so
+# a reinstall can restore the curves and so they can be reviewed in git.
+# Rationale, fan map and test numbers: docs/COOLING.md.
+#
+# Restore: stop coolercontrold, paste these blocks over the matching sections
+# of /etc/coolercontrol/config.toml, start it. Device UIDs are sha256 of
+# hardware identity and should survive a reinstall on the same parts; check
+# the [devices] table at the top of the live file if they don't match.
+#
+#   b308185d… = NZXT Kraken 2023   (fan = 3× top radiator F140s, pump)
+#   18517aee… = nct6798 (mobo)     (fan1/6/7 front intakes, fan5 rear exhaust,
+#                                    fan3 = Kraken pump tach lead — leave alone)
+#   087fe628… = RTX 3090            (temp source only; fans stay on vbios auto)
+
+[[profiles]]
+uid = "0"
+name = "Unmanaged"
+p_type = "Default"
+function = "0"
+
+[[profiles]]
+uid = "radiator"
+name = "Radiator (liquid)"
+p_type = "Graph"
+function_uid = "parker-smooth"
+speed_profile = [[20.0, 30], [36.0, 35], [39.0, 55], [43.0, 100], [100.0, 100]]
+temp_source = { temp_name = "liquid", device_uid = "b308185de6658c811067b6e74271d1607b5340c8e2f9bdb93d3ca518c403796b" }
+
+[[profiles]]
+uid = "pump"
+name = "Pump (liquid)"
+p_type = "Graph"
+function_uid = "parker-smooth"
+speed_profile = [[20.0, 50], [37.0, 55], [40.0, 80], [43.0, 100], [100.0, 100]]
+temp_source = { temp_name = "liquid", device_uid = "b308185de6658c811067b6e74271d1607b5340c8e2f9bdb93d3ca518c403796b" }
+
+[[profiles]]
+uid = "intake-liq"
+name = "Intake · liquid"
+p_type = "Graph"
+function_uid = "parker-smooth"
+speed_profile = [[20.0, 40], [37.0, 40], [41.0, 60], [45.0, 85], [100.0, 100]]
+temp_source = { temp_name = "liquid", device_uid = "b308185de6658c811067b6e74271d1607b5340c8e2f9bdb93d3ca518c403796b" }
+
+[[profiles]]
+uid = "intake-gpu"
+name = "Intake · GPU"
+p_type = "Graph"
+function_uid = "parker-smooth"
+speed_profile = [[20.0, 40], [55.0, 40], [75.0, 85], [100.0, 100]]
+temp_source = { temp_name = "GPU Temp", device_uid = "087fe62835b23123c73f1c00b28f4e391d0725b2c20fdfbf2ebe0e700fe88afd" }
+
+[[profiles]]
+uid = "exhaust-liq"
+name = "Exhaust · liquid"
+p_type = "Graph"
+function_uid = "parker-smooth"
+speed_profile = [[20.0, 35], [37.0, 35], [41.0, 55], [45.0, 80], [100.0, 100]]
+temp_source = { temp_name = "liquid", device_uid = "b308185de6658c811067b6e74271d1607b5340c8e2f9bdb93d3ca518c403796b" }
+
+[[profiles]]
+uid = "exhaust-gpu"
+name = "Exhaust · GPU"
+p_type = "Graph"
+function_uid = "parker-smooth"
+speed_profile = [[20.0, 35], [55.0, 35], [75.0, 80], [100.0, 100]]
+temp_source = { temp_name = "GPU Temp", device_uid = "087fe62835b23123c73f1c00b28f4e391d0725b2c20fdfbf2ebe0e700fe88afd" }
+
+[[profiles]]
+uid = "intake"
+name = "Front intakes"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["intake-liq", "intake-gpu"]
+mix_function_type = "Max"
+
+[[profiles]]
+uid = "exhaust"
+name = "Rear exhaust"
+p_type = "Mix"
+function_uid = "0"
+member_profile_uids = ["exhaust-liq", "exhaust-gpu"]
+mix_function_type = "Max"
+
+# A list of functions to be applied to the various profiles
+[[functions]]
+uid = "0"
+name = "Default Function"
+f_type = "Identity"
+
+[[functions]]
+uid = "parker-smooth"
+name = "Smooth"
+f_type = "Standard"
+duty_minimum = 2
+duty_maximum = 100
+step_size_min_decreasing = 0
+step_size_max_decreasing = 0
+response_delay = 3
+deviance = 2.0
+only_downward = true
+threshold_hopping = true
+bypass_min_at_extremes = false
+
+# Device settings — keep the lcd line already in the live file (parkerd's
+# badge drives it); only fan/pump belong to this snapshot.
+[device-settings.b308185de6658c811067b6e74271d1607b5340c8e2f9bdb93d3ca518c403796b]
+fan = { profile_uid = "radiator" }      # 3× top radiator, exhaust
+pump = { profile_uid = "pump" }
+
+[device-settings.18517aee779eda4778fc7b5432bc39dff7d75c1a3a418c80a52457d40a4a9b90]
+fan1 = { profile_uid = "intake" }       # front middle
+fan6 = { profile_uid = "intake" }       # front top
+fan7 = { profile_uid = "intake" }       # front bottom
+fan5 = { profile_uid = "exhaust" }      # rear
+# fan3 = Kraken pump tach (ignores PWM); fan2, fan4 = empty headers.
+# Whatever fixed duty the live file holds for these is inert.
+

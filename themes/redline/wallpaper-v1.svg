@@ -1,0 +1,114 @@
+<svg viewBox="0 0 2560 1440" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace, 'JetBrains Mono', Menlo, monospace">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#332F33"/>
+      <stop offset="0.72" stop-color="#2B282B"/>
+      <stop offset="1" stop-color="#272427"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#221F21"/>
+      <stop offset="1" stop-color="#1B191B"/>
+    </linearGradient>
+    <radialGradient id="reactor" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FF4653" stop-opacity="0.85"/>
+      <stop offset="0.35" stop-color="#FF4653" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#FF4653" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FF4653" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#FF4653" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.92  0 0 0 0 0.90  0 0 0 0 0.91  0 0 0 0.045 0"/>
+    </filter>
+  </defs>
+
+  <rect width="2560" height="1440" fill="url(#wall)"/>
+  <rect x="0" y="1080" width="2560" height="360" fill="url(#floor)"/>
+  <line x1="0" y1="1080" x2="2560" y2="1080" stroke="#3E393C" stroke-width="3"/>
+
+  <circle cx="430" cy="260" r="480" fill="url(#reactor)"/>
+  <ellipse cx="440" cy="1110" rx="520" ry="100" fill="url(#pool)"/>
+  <g>
+    <rect x="404" y="188" width="52" height="26" rx="6" fill="#20191B" stroke="#5A2A2F" stroke-width="3"/>
+    <circle cx="430" cy="252" r="22" fill="#FF6B75"/>
+    <circle cx="430" cy="252" r="38" fill="none" stroke="#FF4653" stroke-width="5"/>
+    <line x1="430" y1="214" x2="430" y2="228" stroke="#5A5257" stroke-width="5"/>
+  </g>
+  <g fill="#FF8A5C">
+    <circle cx="352" cy="368" r="4"/>
+    <circle cx="514" cy="330" r="3"/>
+    <circle cx="404" cy="452" r="3.4"/>
+  </g>
+
+  <g stroke="#5A5257" fill="none" stroke-linecap="round">
+    <path d="M 2560 220 L 2170 330 L 2040 560" stroke-width="10"/>
+    <path d="M 2100 430 L 1975 900 L 2130 1080" stroke-width="8"/>
+    <path d="M 2560 700 L 2260 758" stroke-width="8"/>
+    <path d="M 2210 350 L 2320 300" stroke-width="5"/>
+    <path d="M 2000 640 L 2085 622" stroke-width="5"/>
+    <path d="M 2040 860 L 2140 838" stroke-width="5"/>
+  </g>
+  <g stroke="#453F43" fill="none">
+    <path d="M 2205 388 L 2100 560 L 2058 760" stroke-width="4"/>
+    <path d="M 2380 728 L 2290 1080" stroke-width="4"/>
+  </g>
+
+  <circle cx="2104" cy="622" r="11" fill="#FF4653"/>
+  <circle cx="2104" cy="622" r="26" fill="url(#pool)"/>
+
+  <g>
+    <text x="1960" y="1288" font-size="86" font-weight="700" letter-spacing="18" fill="#D9D2D4">PKR-01</text>
+    <rect x="1950" y="1232" width="450" height="6" fill="#1D1A1C"/>
+    <rect x="1950" y="1258" width="450" height="5" fill="#1D1A1C"/>
+  </g>
+  <g fill="#ECE8E9">
+    <rect x="1964" y="1318" width="150" height="10"/>
+    <rect x="1964" y="1340" width="86" height="10"/>
+  </g>
+
+  <g fill="#9FC9D6">
+    <rect x="2464" y="300" width="30" height="7"/>
+    <rect x="2464" y="360" width="30" height="7"/>
+    <rect x="2464" y="420" width="30" height="7"/>
+    <rect x="2464" y="540" width="30" height="7"/>
+    <rect x="2464" y="600" width="30" height="7"/>
+    <rect x="2464" y="720" width="30" height="7"/>
+    <rect x="2464" y="840" width="30" height="7"/>
+  </g>
+  <g fill="#FF4653">
+    <rect x="2464" y="480" width="30" height="7"/>
+    <rect x="2464" y="660" width="30" height="7"/>
+  </g>
+
+  <g>
+    <polygon points="60,1230 190,1230 120,1440 0,1440" fill="#3A3134"/>
+    <polygon points="290,1230 420,1230 350,1440 220,1440" fill="#FF4653" opacity="0.9"/>
+    <polygon points="520,1230 650,1230 580,1440 450,1440" fill="#332C2F"/>
+  </g>
+  <line x1="0" y1="1076" x2="820" y2="1076" stroke="#5A2A2F" stroke-width="6"/>
+
+  <g stroke="#3B3538" stroke-width="2" fill="none">
+    <line x1="60" y1="560" x2="60" y2="880"/>
+    <rect x="42" y="700" width="36" height="52"/>
+  </g>
+  <g stroke="#4A4347" fill="none" stroke-linecap="round">
+    <path d="M 0 150 L 296 212 L 430 188" stroke-width="8"/>
+    <path d="M 168 0 L 236 196" stroke-width="6"/>
+    <path d="M 0 340 L 210 396 L 302 560" stroke-width="6"/>
+    <path d="M 96 372 L 148 470" stroke-width="4"/>
+  </g>
+  <g stroke="#443E42" stroke-width="4" fill="none">
+    <line x1="620" y1="0" x2="620" y2="240"/>
+    <line x1="620" y1="240" x2="606" y2="268"/>
+    <line x1="760" y1="0" x2="760" y2="150"/>
+  </g>
+  <g fill="#443E42">
+    <circle cx="620" cy="252" r="6"/>
+    <circle cx="760" cy="160" r="6"/>
+  </g>
+  <path d="M 2140 0 C 2170 320 2380 420 2560 448" stroke="#3E383B" stroke-width="7" fill="none"/>
+
+  <rect width="2560" height="1440" filter="url(#grain)"/>
+</svg>

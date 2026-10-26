@@ -1,0 +1,12 @@
+# Local reference clone of the giskard dotfiles repo — never committed here.
+dotfiles/
+
+# Nix build outputs
+result
+result-*
+
+.DS_Store
+.claude/
+
+# Rust build output (home/parker/parkerd). The nix build has its own.
+target/

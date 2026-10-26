@@ -1,0 +1,24 @@
+[package]
+name = "parkerd"
+version = "0.1.0"
+edition = "2021"
+description = "parker — the machine's own senses"
+
+# The binary is `parker`; the crate is named for what it grows into.
+[[bin]]
+name = "parker"
+path = "src/main.rs"
+
+# Deliberately small. v0 reads /proc and shells out where a crate would only
+# add surface: nvidia-smi and systemctl are already on PATH and a one-shot
+# CLI does not care about a 100ms fork. NVML, sysinfo and a real async
+# runtime are daemon-era decisions, not v0 ones.
+[dependencies]
+base64 = "0.22"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+zbus = "5"
+
+[profile.release]
+strip = true

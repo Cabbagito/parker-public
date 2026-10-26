@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet"><script src="parker-face.js"></script><style>
+body{margin:0;background:#07070a;font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;-webkit-font-smoothing:antialiased}
+a{color:#7aa2f7;text-decoration:none}a:hover{color:#a6c0fb}
+@keyframes beatIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes caret{50%{opacity:0}}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(280%)}}
+</style></helmet>
+
+<div style="padding:40px 44px 60px;color:#c9c7cd">
+
+<div style="display:flex;align-items:baseline;gap:14px;margin-bottom:4px"><span style="font:500 14px/1.2 'JetBrains Mono',monospace">the bed</span><span style="font:300 12px/1.4 'JetBrains Mono',monospace;color:rgba(201,199,205,.45)">one conversation, one clock, three views.</span></div>
+<div style="font:300 11px/1.6 'JetBrains Mono',monospace;color:rgba(201,199,205,.3);margin-bottom:20px">locked: big WEARS · ledger work · hairline view indicator · one keybind row. Open: the corner, and how your own turn reads.</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:26px;align-items:center;padding:14px 18px;margin-bottom:24px;border:1px solid rgba(255,255,255,.09);border-radius:6px;background:#0d0d11;font:400 11px/1 'JetBrains Mono',monospace">
+  <div style="display:flex;align-items:center;gap:9px"><span style="font-size:9.5px;letter-spacing:.14em;color:rgba(201,199,205,.3)">LOCKED</span><span style="color:rgba(201,199,205,.55)">combined corner · band turn · big wears · ledger work</span></div>
+  <div style="display:flex;align-items:center;gap:9px;margin-left:auto"><span style="font-size:9.5px;letter-spacing:.14em;color:rgba(201,199,205,.3)">BEAT {{ stepNum }}/5</span>
+    <span onClick="{{ back }}" style="padding:5px 10px;border-radius:4px;background:rgba(201,199,205,.08);cursor:pointer">◂</span>
+    <span onClick="{{ toggle }}" style="padding:5px 10px;border-radius:4px;background:rgba(201,199,205,.08);cursor:pointer">{{ playLabel }}</span>
+    <span onClick="{{ fwd }}" style="padding:5px 10px;border-radius:4px;background:rgba(201,199,205,.08);cursor:pointer">▸</span>
+  </div>
+</div>
+
+<div style="display:flex;gap:28px;align-items:flex-start">
+
+  <div style="display:flex;flex-direction:column;gap:9px">
+    <div style="font:300 11px/1.4 'JetBrains Mono',monospace;color:rgba(201,199,205,.5)"><span style="color:#c9c7cd">DEFAULT</span> — where you land and where you type</div>
+    <div style="position:relative;width:1280px;height:720px;background:#101014;color:#c9c7cd;font:400 12px/1.55 'JetBrains Mono',monospace;overflow:hidden;border:1px solid rgba(255,255,255,.08);border-radius:6px;--face-fg:#c9c7cd;--accent:#7aa2f7;--good:#9ece6a;--bad:#f7768e">
+      <parker-face expression="{{ face }}" style="position:absolute;left:228px;top:26px;width:825px;height:363px"></parker-face>
+
+      <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:124px;width:700px;max-height:250px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:13px;mask-image:linear-gradient(to bottom,transparent,#000 40px)">
+        <div style="align-self:{{ uAlign }};display:flex;align-items:baseline;gap:8px;color:{{ uColor }};background:{{ uBg }};border-left:{{ uRule }};padding:{{ uPad }};border-radius:3px"><span style="color:{{ uPrefixColor }};font-size:11px">{{ uPrefix }}</span>why did the rebuild leave the borders off?</div>
+        <sc-if value="{{ showB3 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;font-size:14px;line-height:1.55;color:rgba(201,199,205,.85)">Stylix and hyprland are both writing <span style="color:rgba(201,199,205,.98);background:rgba(201,199,205,.08);padding:1px 5px;border-radius:2px;font-size:13px">border_size</span>. Mine loses.</div></sc-if>
+        <sc-if value="{{ showB5 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;font-size:14px;line-height:1.55">Set it after the target and it holds. One line, and your borders come back.</div></sc-if>
+        <sc-if value="{{ working }}" hint-placeholder-val="{{ true }}"><div style="font-size:11.5px;color:rgba(201,199,205,.4)">{{ workingLine }}<span style="display:inline-block;width:8px;height:13px;background:rgba(122,162,247,.55);margin-left:7px;vertical-align:-2px;animation:caret .7s steps(1) infinite"></span></div></sc-if>
+      </div>
+
+      <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:108px;width:700px;height:1px;background:rgba(201,199,205,.08)"></div>
+      <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:62px;width:700px;display:flex;align-items:center;gap:10px"><span style="color:{{ uPromptColor }}">›</span><span style="display:inline-block;width:8px;height:16px;background:{{ uCaret }};animation:caret 1.1s steps(1) infinite"></span><span style="color:rgba(201,199,205,.22)">talk to parker</span></div>
+      <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:30px;width:700px;display:flex;gap:16px;font-size:10px;letter-spacing:.12em;color:rgba(201,199,205,.2)"><span style="color:rgba(247,118,142,.45)">ESC STOP</span><span>^K COMMANDS</span><span>^Y EARLIER</span><span>^SPACE DANCE</span><span>^± DEPTH</span></div>
+
+      <div style="position:absolute;left:60px;top:470px;width:190px"><div style="font-size:9.5px;letter-spacing:.18em;color:rgba(201,199,205,.25)">WEARS</div><div style="margin-top:5px;font-size:26px;line-height:1.1;color:rgba(122,162,247,.9);letter-spacing:-.01em">{{ face }}</div><div style="margin-top:9px;width:120px;height:1px;background:rgba(122,162,247,.35)"></div></div>
+      <div style="position:absolute;left:22px;bottom:12px;display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.1em;color:rgba(201,199,205,.16)"><span style="color:#7aa2f7">DEFAULT</span><span style="width:20px;height:1px;background:rgba(201,199,205,.16)"></span><span>SESSION</span><span style="width:20px;height:1px;background:rgba(201,199,205,.16)"></span><span>DEEP</span></div>
+
+      <div style="position:absolute;top:26px;right:34px;text-align:right">
+        <sc-if value="{{ isE }}" hint-placeholder-val="{{ true }}"><div style="font-size:10.5px;line-height:1.9;color:rgba(201,199,205,.3)"><div>19:31 · thursday</div><div style="font-style:italic;color:rgba(201,199,205,.45)">warm, fans idling, mildly annoyed at stylix</div><div style="margin-top:3px;font-size:10px">cpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▅▃</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▂▁▁▁▁</span> 22% · gpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▇▇▅</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▃▂▁▁</span> 38%</div><div style="font-size:10px"><span style="color:rgba(158,206,106,.75)">51°C in</span> · <span style="color:rgba(122,162,247,.75)">4°C out</span></div></div></sc-if>
+        <sc-if value="{{ isC }}" hint-placeholder-val="{{ true }}"><div style="font:italic 11.5px/1.7 'JetBrains Mono',monospace;color:rgba(201,199,205,.45)">warm, fans idling, mildly annoyed at stylix</div></sc-if>
+        <sc-if value="{{ isA }}" hint-placeholder-val="{{ true }}"><div style="font-size:10px;line-height:1.9;color:rgba(201,199,205,.3)"><div>cpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▅▃</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▂▁▁▁▁</span> <span style="color:rgba(201,199,205,.55)">22%</span></div><div>gpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▇▇▅</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▃▂▁▁</span> <span style="color:rgba(201,199,205,.55)">38%</span> · <span style="color:rgba(158,206,106,.75)">51°C</span></div><div>mem <span style="letter-spacing:1px;color:rgba(122,162,247,.55)">▇▇</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▂▁▁▁▁▁</span> <span style="color:rgba(201,199,205,.55)">7.5G</span></div></div></sc-if>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:9px">
+    <div style="font:300 11px/1.4 'JetBrains Mono',monospace;color:rgba(201,199,205,.5)"><span style="color:#c9c7cd">SESSION</span> — the beats, as they land</div>
+    <div style="position:relative;width:1280px;height:720px;background:#101014;color:#c9c7cd;font:400 12px/1.55 'JetBrains Mono',monospace;overflow:hidden;border:1px solid rgba(255,255,255,.08);border-radius:6px;--face-fg:#c9c7cd;--accent:#7aa2f7;--good:#9ece6a;--bad:#f7768e">
+      <parker-face expression="{{ face }}" style="position:absolute;left:-178px;top:104px;width:778px;height:342px"></parker-face>
+      <div style="position:absolute;left:60px;top:470px;width:190px"><div style="font-size:9.5px;letter-spacing:.18em;color:rgba(201,199,205,.25)">WEARS</div><div style="margin-top:5px;font-size:26px;line-height:1.1;color:rgba(122,162,247,.9);letter-spacing:-.01em">{{ face }}</div><div style="margin-top:9px;width:120px;height:1px;background:rgba(122,162,247,.35)"></div></div>
+      <div style="position:absolute;left:22px;bottom:12px;display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.1em;color:rgba(201,199,205,.16)"><span>DEFAULT</span><span style="width:20px;height:1px;background:rgba(201,199,205,.16)"></span><span style="color:#7aa2f7">SESSION</span><span style="width:20px;height:1px;background:rgba(201,199,205,.16)"></span><span>DEEP</span></div>
+
+      <div style="position:absolute;top:26px;right:36px;text-align:right">
+        <sc-if value="{{ isE }}" hint-placeholder-val="{{ true }}"><div style="font-size:10px;line-height:1.9;color:rgba(201,199,205,.28)"><div>19:31 · thursday</div><div style="font-style:italic;color:rgba(201,199,205,.4)">head down, gpu warm</div><div style="margin-top:3px">cpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▅▃</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▂▁▁▁▁▁</span> 31% · gpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▇▇▇▅</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▃▂▁</span> 41%</div><div><span style="color:rgba(158,206,106,.75)">53°C in</span> · <span style="color:rgba(122,162,247,.75)">4°C out</span></div></div></sc-if>
+        <sc-if value="{{ isC }}" hint-placeholder-val="{{ true }}"><div style="font:italic 11px/1.7 'JetBrains Mono',monospace;color:rgba(201,199,205,.4)">head down, gpu warm</div></sc-if>
+        <sc-if value="{{ isA }}" hint-placeholder-val="{{ true }}"><div style="font-size:10px;line-height:1.9;color:rgba(201,199,205,.28)"><div>cpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▅▃</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▂▁▁▁▁▁</span> <span style="color:rgba(201,199,205,.5)">31%</span></div><div>gpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▇▇▇▅</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▃▂▁</span> <span style="color:rgba(201,199,205,.5)">41%</span> · <span style="color:rgba(158,206,106,.75)">53°C</span></div></div></sc-if>
+      </div>
+
+      <div style="position:absolute;left:435px;right:0;top:0;bottom:0;padding:0 40px;display:flex;flex-direction:column">
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:15px;padding:56px 0 20px;width:100%;max-width:780px;margin:0 auto;overflow:hidden">
+          <div style="align-self:{{ uAlign }};display:flex;align-items:baseline;gap:8px;color:{{ uColor }};background:{{ uBg }};border-left:{{ uRule }};padding:{{ uPad }};border-radius:3px"><span style="color:{{ uPrefixColor }};font-size:11px">{{ uPrefix }}</span>why did the rebuild leave the borders off?</div>
+          <sc-if value="{{ showB1 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;display:flex;align-items:baseline;gap:11px;font-size:11.5px;color:rgba(201,199,205,.45)"><span style="color:rgba(201,199,205,.3);width:12px">▤</span><span style="flex:1">read <span style="color:rgba(201,199,205,.72)">system/theming.nix</span></span><span style="font-size:10px;color:rgba(201,199,205,.28)">58 lines</span></div></sc-if>
+          <sc-if value="{{ showB2 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both"><div style="display:flex;align-items:baseline;gap:11px;font-size:11.5px;color:rgba(201,199,205,.45)"><span style="color:rgba(122,162,247,.6);width:12px">$</span><span style="flex:1">ran <span style="color:rgba(201,199,205,.72)">nixos-rebuild dry-activate</span></span><span style="font-size:10px;color:rgba(201,199,205,.28)">4.2s</span></div><div style="margin-top:6px;height:1px;background:rgba(201,199,205,.08);overflow:hidden"><div style="width:36%;height:1px;background:rgba(122,162,247,.7);animation:sweep 1.4s ease-in-out infinite"></div></div></div></sc-if>
+          <sc-if value="{{ showB3 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;font-size:14px;line-height:1.55">Stylix and hyprland are both writing <span style="color:rgba(201,199,205,.98);background:rgba(201,199,205,.08);padding:1px 5px;border-radius:2px;font-size:13px">border_size</span>. Mine loses.</div></sc-if>
+          <sc-if value="{{ showB4 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;border-left:1px solid rgba(122,162,247,.35);padding:2px 0 2px 14px"><div style="font-size:9.5px;letter-spacing:.14em;color:rgba(201,199,205,.28);margin-bottom:5px">NIX · HOME/DESKTOP/HYPRLAND.NIX</div><div style="font-size:12px;line-height:1.8;white-space:pre">general = {
+  <span style="color:#7aa2f7">border_size</span> = <span style="color:#9ece6a">2</span>;   <span style="color:rgba(201,199,205,.3)"># after the stylix target</span>
+};</div></div></sc-if>
+          <sc-if value="{{ showB5 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;font-size:14px;line-height:1.55">Set it after the target and it holds. One line, and your borders come back.</div></sc-if>
+          <sc-if value="{{ streaming }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.12em;color:rgba(201,199,205,.25)"><span style="display:inline-block;width:8px;height:14px;background:rgba(122,162,247,.55);animation:caret .7s steps(1) infinite"></span>{{ stepLabel }}</div></sc-if>
+        </div>
+        <div style="width:100%;max-width:780px;margin:0 auto;height:1px;background:rgba(201,199,205,.08)"></div>
+        <div style="width:100%;max-width:780px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:16px 0 10px"><span style="color:{{ uPromptColor }}">›</span><span style="display:inline-block;width:8px;height:16px;background:{{ uCaret }};animation:caret 1.1s steps(1) infinite"></span></div>
+        <div style="width:100%;max-width:780px;margin:0 auto 30px;display:flex;gap:16px;font-size:10px;letter-spacing:.12em;color:rgba(201,199,205,.2)"><span style="color:rgba(247,118,142,.45)">ESC STOP</span><span>^K COMMANDS</span><span>^Y EARLIER</span><span>^SPACE DANCE</span><span>^± DEPTH</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:9px">
+    <div style="font:300 11px/1.4 'JetBrains Mono',monospace;color:rgba(201,199,205,.5)"><span style="color:#c9c7cd">DEEP</span> — same conversation, the screen is the transcript</div>
+    <div style="position:relative;width:1280px;height:720px;background:#101014;color:#c9c7cd;font:400 12px/1.55 'JetBrains Mono',monospace;overflow:hidden;border:1px solid rgba(255,255,255,.08);border-radius:6px;--face-fg:#c9c7cd;--accent:#7aa2f7;--good:#9ece6a;--bad:#f7768e">
+      <parker-face expression="{{ face }}" style="position:absolute;left:-48px;top:280px;width:304px;height:134px"></parker-face>
+      <div style="position:absolute;left:60px;top:470px;width:190px"><div style="font-size:9.5px;letter-spacing:.18em;color:rgba(201,199,205,.25)">WEARS</div><div style="margin-top:5px;font-size:26px;line-height:1.1;color:rgba(122,162,247,.9);letter-spacing:-.01em">{{ face }}</div><div style="margin-top:9px;width:120px;height:1px;background:rgba(122,162,247,.35)"></div></div>
+      <div style="position:absolute;left:22px;bottom:12px;display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.1em;color:rgba(201,199,205,.16)"><span>DEFAULT</span><span style="width:20px;height:1px;background:rgba(201,199,205,.16)"></span><span>SESSION</span><span style="width:20px;height:1px;background:rgba(201,199,205,.16)"></span><span style="color:#7aa2f7">DEEP</span></div>
+
+      <div style="position:absolute;top:26px;right:40px;text-align:right">
+        <sc-if value="{{ isE }}" hint-placeholder-val="{{ true }}"><div style="font-size:10px;line-height:1.9;color:rgba(201,199,205,.26)"><div>19:31 · thursday</div><div style="font-style:italic;color:rgba(201,199,205,.38)">head down, gpu warm</div><div style="margin-top:3px">gpu <span style="letter-spacing:1px;color:rgba(122,162,247,.7)">▇▇▇▇</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▃▂▁▁</span> 41% · <span style="color:rgba(158,206,106,.7)">53°C in</span> · <span style="color:rgba(122,162,247,.7)">4°C out</span></div></div></sc-if>
+        <sc-if value="{{ isC }}" hint-placeholder-val="{{ true }}"><div style="font:italic 11px/1.7 'JetBrains Mono',monospace;color:rgba(201,199,205,.35)">head down, gpu warm</div></sc-if>
+        <sc-if value="{{ isA }}" hint-placeholder-val="{{ true }}"><div style="font-size:10px;line-height:1.9;color:rgba(201,199,205,.26)">gpu <span style="letter-spacing:1px;color:rgba(122,162,247,.7)">▇▇▇▇</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▃▂▁▁</span> 41% · <span style="color:rgba(158,206,106,.7)">53°C</span></div></sc-if>
+      </div>
+
+      <div style="position:absolute;left:280px;right:56px;top:0;bottom:0;display:flex;flex-direction:column">
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:15px;padding:28px 0 20px;overflow:hidden">
+          <div style="align-self:{{ uAlign }};display:flex;align-items:baseline;gap:8px;color:{{ uColorDim }};background:{{ uBg }};border-left:{{ uRule }};padding:{{ uPad }};border-radius:3px"><span style="color:{{ uPrefixColor }};font-size:11px">{{ uPrefix }}</span>and the wallpapers — which one ships for hangar?</div>
+          <div style="color:rgba(201,199,205,.55);font-size:13px">The exploded 2×12 combo. Only one of the two is pointed at.</div>
+          <div style="align-self:{{ uAlign }};display:flex;align-items:baseline;gap:8px;color:{{ uColor }};background:{{ uBg }};border-left:{{ uRule }};padding:{{ uPad }};border-radius:3px"><span style="color:{{ uPrefixColor }};font-size:11px">{{ uPrefix }}</span>why did the rebuild leave the borders off?</div>
+          <sc-if value="{{ showB1 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;display:flex;align-items:baseline;gap:11px;font-size:11.5px;color:rgba(201,199,205,.45)"><span style="color:rgba(201,199,205,.3);width:12px">▤</span><span style="flex:1">read <span style="color:rgba(201,199,205,.72)">system/theming.nix</span></span><span style="font-size:10px;color:rgba(201,199,205,.28)">58 lines</span></div></sc-if>
+          <sc-if value="{{ showB2 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;display:flex;align-items:baseline;gap:11px;font-size:11.5px;color:rgba(201,199,205,.45)"><span style="color:rgba(122,162,247,.6);width:12px">$</span><span style="flex:1">ran <span style="color:rgba(201,199,205,.72)">nixos-rebuild dry-activate</span></span><span style="font-size:10px;color:rgba(201,199,205,.28)">4.2s</span></div></sc-if>
+          <sc-if value="{{ showB3 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;font-size:14px;line-height:1.55">Stylix and hyprland are both writing <span style="color:rgba(201,199,205,.98);background:rgba(201,199,205,.08);padding:1px 5px;border-radius:2px;font-size:13px">border_size</span>. Mine loses.</div></sc-if>
+          <sc-if value="{{ showB4 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;border-left:1px solid rgba(122,162,247,.35);padding:2px 0 2px 14px"><div style="font-size:9.5px;letter-spacing:.14em;color:rgba(201,199,205,.28);margin-bottom:5px">NIX · HOME/DESKTOP/HYPRLAND.NIX</div><div style="font-size:12px;line-height:1.8;white-space:pre">general = {
+  <span style="color:#7aa2f7">border_size</span> = <span style="color:#9ece6a">2</span>;   <span style="color:rgba(201,199,205,.3)"># after the stylix target</span>
+};</div></div></sc-if>
+          <sc-if value="{{ showB5 }}" hint-placeholder-val="{{ true }}"><div style="animation:beatIn 320ms ease-out both;font-size:14px;line-height:1.55">Set it after the target and it holds. One line, and your borders come back.</div></sc-if>
+          <sc-if value="{{ streaming }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.12em;color:rgba(201,199,205,.25)"><span style="display:inline-block;width:8px;height:14px;background:rgba(122,162,247,.55);animation:caret .7s steps(1) infinite"></span>{{ stepLabel }}</div></sc-if>
+        </div>
+        <div style="height:1px;background:rgba(201,199,205,.08)"></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:16px 0 10px"><span style="color:{{ uPromptColor }}">›</span><span style="display:inline-block;width:8px;height:16px;background:{{ uCaret }};animation:caret 1.1s steps(1) infinite"></span></div>
+        <div style="display:flex;gap:16px;font-size:10px;letter-spacing:.12em;color:rgba(201,199,205,.2);padding-bottom:30px"><span style="color:rgba(247,118,142,.45)">ESC STOP</span><span>^K COMMANDS</span><span>^Y EARLIER</span><span>^SPACE DANCE</span><span>^± DEPTH</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:44px;display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start">
+
+  <div style="width:560px;background:#101014;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:24px;font:400 12px/1.7 'JetBrains Mono',monospace;color:rgba(201,199,205,.5)">
+    <div style="font-size:9.5px;letter-spacing:.16em;color:rgba(201,199,205,.3);margin-bottom:16px">NEXT, WHEN YOU WANT IT</div>
+    <div style="display:flex;flex-direction:column;gap:11px;font-size:11.5px">
+      <div><span style="color:#c9c7cd">the travel</span> — what home→session→deep looks like mid-move, and whether the face arcs or slides.</div>
+      <div><span style="color:#c9c7cd">the caret, promoted</span> — it leads his streaming line too, so one object carries every turn.</div>
+      <div><span style="color:#c9c7cd">work folding</span> — old ledger rows collapsing to one line as the talk moves past them.</div>
+      <div><span style="color:#c9c7cd">^K</span> — threads, message search, commands, with ^N/^P nav.</div>
+      <div><span style="color:#c9c7cd">the ambient parker</span> — puck, edge, or anchored bubble, picked and drawn properly.</div>
+      <div><span style="color:#c9c7cd">error and interrupt states</span> — engine gone, a stop mid-beat, a failed command.</div>
+      <div><span style="color:#c9c7cd">dance</span> — the one thing that's already built and never designed for.</div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { step: 0, hud: 'E', user: 3, playing: true };
+
+  faces = ['listening', 'digging', 'skimming', 'deadpan', 'smug', 'amused'];
+
+  // The four ways your own turn could read. One markup, styled per variant —
+  // switching is a runtime value, not a second copy of the transcript.
+  users = {
+    1: { align: 'flex-start', color: '#c9c7cd', dim: 'rgba(201,199,205,.7)', bg: 'transparent', rule: '2px solid rgba(122,162,247,.75)', pad: '2px 0 2px 12px', prefix: '', prefixColor: 'transparent' },
+    2: { align: 'flex-end', color: 'rgba(201,199,205,.78)', dim: 'rgba(201,199,205,.5)', bg: 'transparent', rule: '0', pad: '0', prefix: '›', prefixColor: 'rgba(122,162,247,.5)' },
+    3: { align: 'stretch', color: '#c9c7cd', dim: 'rgba(201,199,205,.6)', bg: 'rgba(122,162,247,.09)', rule: '2px solid rgba(122,162,247,.55)', pad: '7px 12px', prefix: '', prefixColor: 'transparent' },
+    4: { align: 'flex-start', color: '#c9c7cd', dim: 'rgba(201,199,205,.6)', bg: 'transparent', rule: '0', pad: '0', prefix: 'you ›', prefixColor: 'rgba(122,162,247,.8)' },
+  };
+
+  componentDidMount() {
+    this.tick = setInterval(() => {
+      if (!this.state.playing) return;
+      this.setState((s) => ({ step: (s.step + 1) % 7 }));
+    }, 1700);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.tick);
+  }
+
+  pick(key, value) {
+    return () => this.setState({ [key]: value });
+  }
+
+  renderVals() {
+    const step = Math.min(5, this.state.step);
+    const { hud, user } = this.state;
+    const u = this.users[user];
+    const on = (t) => (t ? 'rgba(122,162,247,.18)' : 'transparent');
+    const fg = (t) => (t ? '#c9c7cd' : 'rgba(201,199,205,.4)');
+    const line = (t) => (t ? 'rgba(122,162,247,.55)' : 'rgba(201,199,205,.1)');
+
+    return {
+      face: this.faces[step],
+      showB1: step >= 1,
+      showB2: step >= 2,
+      showB3: step >= 3,
+      showB4: step >= 4,
+      showB5: step >= 5,
+      streaming: step < 5,
+      working: step > 0 && step < 3,
+      workingLine: step === 1 ? 'reading system/theming.nix' : 'running a dry build',
+      stepNum: step,
+      stepLabel: `BEAT ${step + 1} OF 5`,
+      playLabel: this.state.playing ? '❙❙' : '▶',
+
+      isE: hud === 'E', isC: hud === 'C', isA: hud === 'A',
+      hudE: this.pick('hud', 'E'), hudC: this.pick('hud', 'C'), hudA: this.pick('hud', 'A'),
+      hudEBg: on(hud === 'E'), hudEFg: fg(hud === 'E'), hudELine: line(hud === 'E'),
+      hudCBg: on(hud === 'C'), hudCFg: fg(hud === 'C'), hudCLine: line(hud === 'C'),
+      hudABg: on(hud === 'A'), hudAFg: fg(hud === 'A'), hudALine: line(hud === 'A'),
+
+      uAlign: u.align,
+      uColor: u.color,
+      uColorDim: u.dim,
+      uBg: u.bg,
+      uRule: u.rule,
+      uPad: u.pad,
+      uPrefix: u.prefix,
+      uPrefixColor: u.prefixColor,
+      uPromptColor: user === 2 ? 'rgba(122,162,247,.55)' : 'rgba(122,162,247,.85)',
+      uCaret: 'rgba(122,162,247,.8)',
+
+      user1: this.pick('user', 1), user2: this.pick('user', 2),
+      user3: this.pick('user', 3), user4: this.pick('user', 4),
+      u1Bg: on(user === 1), u1Fg: fg(user === 1), u1Line: line(user === 1),
+      u2Bg: on(user === 2), u2Fg: fg(user === 2), u2Line: line(user === 2),
+      u3Bg: on(user === 3), u3Fg: fg(user === 3), u3Line: line(user === 3),
+      u4Bg: on(user === 4), u4Fg: fg(user === 4), u4Line: line(user === 4),
+
+      back: () => this.setState((s) => ({ step: Math.max(0, s.step - 1), playing: false })),
+      fwd: () => this.setState((s) => ({ step: Math.min(5, s.step + 1), playing: false })),
+      toggle: () => this.setState((s) => ({ playing: !s.playing })),
+    };
+  }
+}
+</script>
+</body>
+</html>

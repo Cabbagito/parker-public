@@ -1,0 +1,149 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "auto",
+    "padding": {
+      "top": 4,
+      "left": 15,
+      "right": 4,
+    },
+  },
+  "display": {
+    "separator": " ",
+    "key": {
+      "type": "string",
+      "width": 20,
+    },
+    "color": {
+      "keys": "cyan",
+      "output": "white",
+    },
+  },
+  "modules": [
+    {
+      "type": "custom",
+      "format": " ",
+    },
+    {
+      "type": "title",
+      "key": "        ",
+      "format": "{#bold_magenta}{user-name}{#bold_blue}@{#bold_green}{host-name}",
+      "color": "white",
+    },
+    {
+      "type": "custom",
+      "format": "                 {#90}「{#bold_yellow}強くなりたい{#90}」",
+      "key": " ",
+    },
+    {
+      "type": "custom",
+      "format": " ",
+    },
+    {
+      "type": "custom",
+      "format": "{#bold_green}🌐  System Information",
+      "key": "   ",
+    },
+    {
+      "type": "os",
+      "key": "    🍎 OS",
+      "keyColor": "bold_yellow",
+      "outputColor": "yellow",
+    },
+    {
+      "type": "host",
+      "key": "    💻 Model",
+      "keyColor": "bold_red",
+      "outputColor": "red",
+    },
+    {
+      "type": "kernel",
+      "key": "    🧬 Kernel",
+      "keyColor": "bold_magenta",
+      "outputColor": "magenta",
+    },
+    {
+      "type": "uptime",
+      "key": "    ⏰ Uptime",
+      "keyColor": "bold_blue",
+      "outputColor": "blue",
+    },
+    "break",
+    {
+      "type": "custom",
+      "format": "{#bold_green}🚀  Development Environment",
+      "key": "   ",
+    },
+    {
+      "type": "packages",
+      "key": "    📦 Packages",
+      "keyColor": "bold_yellow",
+      "outputColor": "yellow",
+    },
+    {
+      "type": "shell",
+      "key": "    🐚 Shell",
+      "keyColor": "bold_red",
+      "outputColor": "red",
+    },
+    {
+      "type": "terminal",
+      "key": "    👻 Terminal",
+      "keyColor": "bold_magenta",
+      "outputColor": "magenta",
+      "format": "ghostty",
+    },
+    {
+      "type": "editor",
+      "key": "    🤖 Editor",
+      "keyColor": "bold_blue",
+      "outputColor": "blue",
+    },
+    "break",
+    {
+      "type": "custom",
+      "format": "{#bold_green}🔥  Hardware Details",
+      "key": "   ",
+    },
+    {
+      "type": "cpu",
+      "key": "    🧠 CPU",
+      "keyColor": "bold_yellow",
+      "outputColor": "yellow",
+    },
+    {
+      "type": "gpu",
+      "key": "    🌈 GPU",
+      "keyColor": "bold_red",
+      "outputColor": "red",
+      "format": "{2} @ {11}",
+    },
+    {
+      "type": "memory",
+      "key": "    💾 Memory",
+      "keyColor": "bold_magenta",
+      "outputColor": "magenta",
+    },
+    {
+      "type": "disk",
+      "key": "    🗂️ Storage",
+      "keyColor": "bold_blue",
+      "outputColor": "blue",
+      "format": "{1} / {2} ({3})",
+    },
+    "break",
+    {
+      "type": "custom",
+      "format": " ",
+    },
+    {
+      "type": "colors",
+      "symbol": "square",
+      "paddingLeft": 20,
+    },
+    {
+      "type": "custom",
+      "format": " ",
+    },
+  ],
+}

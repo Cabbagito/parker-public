@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>parker theme lab</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: #232326; color: #B8B8BC;
+    font-family: ui-monospace, "MesloLGS NF", "JetBrains Mono", Menlo, monospace;
+    padding: 28px 20px 48px; display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  header { width: 100%; max-width: 1180px; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  header h1 { font-size: 15px; font-weight: 500; color: #E4E4E8; letter-spacing: 0.04em; }
+  header span { font-size: 12px; color: #7A7A80; }
+  nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  nav button {
+    font: inherit; font-size: 13px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    background: #2C2C30; color: #A8A8AE; border: 1px solid #3A3A40;
+  }
+  nav button:hover { border-color: #55555C; color: #D8D8DC; }
+  nav button.on { background: var(--pill-bg, #E4E4E8); color: var(--pill-fg, #1A1A1C); border-color: transparent; font-weight: 500; }
+  .meta { width: 100%; max-width: 1180px; display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: #8A8A90; flex-wrap: wrap; }
+  .meta b { color: #C8C8CC; font-weight: 500; }
+
+  .desktop {
+    position: relative; width: 100%; max-width: 1180px; aspect-ratio: 16/9.4;
+    border-radius: 14px; overflow: hidden; border: 1px solid #000;
+    background: linear-gradient(135deg, var(--wall1) 0%, var(--wall1) 55%, var(--wall2) 55.2%, var(--wall2) 100%);
+    font-size: clamp(8px, 1.05vw, 12.5px); line-height: 1.6; color: var(--fg);
+  }
+
+  .bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 2.6em;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 1.4em;
+    background: color-mix(in srgb, var(--bg0) 55%, transparent);
+    backdrop-filter: blur(10px); font-size: 0.95em; color: var(--barfg);
+  }
+  .ws { display: flex; gap: 0.9em; align-items: center; }
+  .ws i { width: 0.6em; height: 0.6em; border-radius: 50%; background: var(--bg3); display: inline-block; }
+  .ws i.on { background: var(--accent); width: 1.6em; border-radius: 999px; }
+  .tray { display: flex; gap: 1.4em; opacity: 0.9; }
+
+  .win {
+    position: absolute; border-radius: 10px; overflow: hidden;
+    backdrop-filter: blur(var(--blur));
+    background: color-mix(in srgb, var(--bg0) calc(var(--op) * 100%), transparent);
+  }
+  .win.active { border: 2px solid var(--accent); }
+  .win.inactive { border: 2px solid var(--border-i); }
+
+  .ghostty { top: 4.4em; left: 1.6em; width: 60%; bottom: 1.6em; display: flex; flex-direction: column; }
+  .ztabs { display: flex; gap: 1em; padding: 0.5em 1.2em 0.35em; font-size: 0.9em; color: var(--comment); }
+  .ztabs b { color: var(--accent); font-weight: 500; }
+  .panes { flex: 1; display: flex; min-height: 0; }
+  .pane { padding: 0.6em 1.1em; overflow: hidden; white-space: pre; }
+  .pane.nvim { flex: 1.5; border-right: 1px solid color-mix(in srgb, var(--bg3) 60%, transparent); }
+  .pane.shell { flex: 1; }
+  .ln { color: var(--comment); opacity: 0.6; display: inline-block; width: 2.2em; }
+  .vsl { display: flex; justify-content: space-between; padding: 0.2em 1.1em; font-size: 0.9em;
+         background: color-mix(in srgb, var(--bg2) 80%, transparent); }
+  .vsl .mode { color: var(--bg0); background: var(--accent); padding: 0 0.7em; border-radius: 3px; font-weight: 500; }
+  .zstatus { display: flex; justify-content: space-between; padding: 0.3em 1.2em; font-size: 0.88em; color: var(--comment); }
+  .zstatus b { color: var(--accent2); font-weight: 500; }
+
+  .yazi { top: 4.4em; right: 1.6em; width: 34.5%; height: 58%; padding: 0.7em 1.1em; }
+  .yazi .path { color: var(--accent); margin-bottom: 0.4em; }
+  .yazi .row { display: flex; justify-content: space-between; padding: 0 0.5em; border-radius: 4px; }
+  .yazi .row.sel { background: color-mix(in srgb, var(--accent) 22%, transparent); color: var(--fg); }
+  .yazi .sz { color: var(--comment); }
+
+  .toast {
+    position: absolute; right: 1.6em; top: calc(4.4em + 61%); width: 34.5%;
+    border-radius: 10px; padding: 0.7em 1.1em;
+    background: color-mix(in srgb, var(--bg1) calc(var(--op) * 100%), transparent);
+    backdrop-filter: blur(var(--blur)); border-left: 3px solid var(--accent2); border-radius: 0 10px 10px 0;
+    font-size: 0.95em;
+  }
+  .toast b { color: var(--fg); font-weight: 500; display: block; }
+  .toast span { color: var(--comment); }
+
+  .launcher {
+    position: absolute; left: 50%; top: 34%; transform: translateX(-50%); width: 34%;
+    border-radius: 10px; overflow: hidden; display: none;
+    background: color-mix(in srgb, var(--bg1) calc(var(--op) * 100%), transparent);
+    backdrop-filter: blur(var(--blur)); border: 2px solid var(--accent);
+  }
+
+  .swatches { width: 100%; max-width: 1180px; display: flex; gap: 6px; }
+  .swatches i { flex: 1; height: 14px; border-radius: 4px; display: block; }
+  footer { font-size: 12px; color: #6E6E74; max-width: 1180px; text-align: center; line-height: 1.7; }
+  kbd { background: #2C2C30; border: 1px solid #3A3A40; border-radius: 4px; padding: 0 5px; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>parker · theme lab</h1>
+  <span>hyprland + noctalia + ghostty/zellij/nvim + yazi · flat placeholder wallpaper</span>
+</header>
+
+<nav id="nav"></nav>
+
+<div class="meta">
+  <div id="meta-note"></div>
+  <div id="meta-knobs"></div>
+</div>
+
+<div class="desktop" id="desktop">
+  <div class="bar">
+    <div class="ws"><i></i><i></i><i class="on"></i><i></i></div>
+    <div class="tray"><span>tailscale ↑</span><span>vol 42%</span><span id="clock">14:32</span></div>
+  </div>
+
+  <div class="win active ghostty">
+    <div class="ztabs">zellij <b>main</b> nix logs</div>
+    <div class="panes">
+      <div class="pane nvim" id="nvim"></div>
+      <div class="pane shell" id="shell"></div>
+    </div>
+    <div class="vsl"><span class="mode">NORMAL</span><span id="vsl-file">flake.nix · nix</span><span>72%  ln 41:7</span></div>
+    <div class="zstatus"><span><b>◆</b> zellij session: main</span><span>tab ▸ pane ▸ resize</span></div>
+  </div>
+
+  <div class="win inactive yazi" id="yazi"></div>
+
+  <div class="toast"><b>rebuild complete</b><span>parker · generation 142 · 28s</span></div>
+</div>
+
+<div class="swatches" id="swatches"></div>
+
+<footer>
+  switch with <kbd>1</kbd>–<kbd>6</kbd> · active window border = accent, inactive = muted ·
+  families: blush↔velour · glacier↔trench · hangar↔redline — schedule flips polarity within the active family
+</footer>
+
+<script>
+const THEMES = [
+  { name: "blush",   tag: "light", note: "soft warm white · pink lead, green/orange sparks",
+    wall1:"#EFE6DA", wall2:"#E7D9CB",
+    bg0:"#FAF6F1", bg1:"#F2ECE4", bg2:"#EADFD6", bg3:"#DFD2C6",
+    fg:"#57504A", comment:"#B3A79B", barfg:"#6E655D",
+    accent:"#D98BA6", accent2:"#6FBF87", borderI:"#E3D8CC",
+    red:"#C97B7B", orange:"#E8965A", yellow:"#D9B36A", green:"#6FBF87",
+    cyan:"#7FB5A3", blue:"#8FA3C7", magenta:"#C77D9E",
+    op:0.88, blur:"14px" },
+
+  { name: "glacier", tag: "light", note: "pure white ground, cold accent family · blue lives in accents + wallpaper, not the surfaces",
+    wall1:"#D8E3EF", wall2:"#C4D4E6",
+    bg0:"#FFFFFF", bg1:"#F5F8FB", bg2:"#EAEFF5", bg3:"#D4DDE7",
+    fg:"#25313F", comment:"#8493A6", barfg:"#4E6076",
+    accent:"#1E66D0", accent2:"#0E8FA6", borderI:"#D5DFEA",
+    red:"#D64550", orange:"#55677D", yellow:"#B7912B", green:"#1E9E82",
+    cyan:"#0E8FA6", blue:"#1E66D0", magenta:"#6259D6",
+    op:0.96, blur:"8px" },
+
+  { name: "hangar",  tag: "light", note: "redline's daylight bay · white ground, warm-gray panels, red markings, baby-blue pop",
+    wall1:"#E5DFE1", wall2:"#D6D0D2",
+    bg0:"#FFFFFF", bg1:"#F7F5F6", bg2:"#ECE9EA", bg3:"#D8D3D5",
+    fg:"#2E2A2C", comment:"#948C8F", barfg:"#6B6265",
+    accent:"#E03E4B", accent2:"#6FAEC2", borderI:"#E0DBDD",
+    red:"#E03E4B", orange:"#D97E4E", yellow:"#C79A3B", green:"#7A9973",
+    cyan:"#4E97AE", blue:"#5D93A8", magenta:"#D65A78",
+    op:0.97, blur:"6px" },
+
+  { name: "trench",  tag: "dark",  note: "tokyo skeleton, challenger blood · violet navy, electric cyan/mint",
+    wall1:"#232141", wall2:"#161524",
+    bg0:"#1C1B2E", bg1:"#262441", bg2:"#302D50", bg3:"#3F3B63",
+    fg:"#CBD8F0", comment:"#5C5C81", barfg:"#9AA5CC",
+    accent:"#6FA8FF", accent2:"#63F2F1", borderI:"#34305A",
+    red:"#FF6E7F", orange:"#FFB378", yellow:"#EFC078", green:"#62D196",
+    cyan:"#63F2F1", blue:"#6FA8FF", magenta:"#9A7CFF",
+    op:0.9, blur:"16px" },
+
+  { name: "velour",  tag: "dark",  note: "blush after midnight · warm plum ground, rose lead, mint spark",
+    wall1:"#2B2229", wall2:"#1B1519",
+    bg0:"#201A1E", bg1:"#2B2229", bg2:"#362B32", bg3:"#453641",
+    fg:"#D9CBD2", comment:"#82737C", barfg:"#A995A0",
+    accent:"#E394B0", accent2:"#8FD9A8", borderI:"#3A2E36",
+    red:"#E08A8A", orange:"#F0A878", yellow:"#D9BC7F", green:"#8FD9A8",
+    cyan:"#93C4BC", blue:"#92A8D1", magenta:"#C79BD1",
+    op:0.9, blur:"12px" },
+
+  { name: "redline", tag: "dark · loud", note: "trench's red sibling · near-black hull, pure-red markings, white decals — everything else stays quiet",
+    wall1:"#333033", wall2:"#252224",
+    bg0:"#0C0B0D", bg1:"#161418", bg2:"#221F24", bg3:"#332E35",
+    fg:"#F2EFF0", comment:"#777075", barfg:"#CFC7CA",
+    accent:"#FF1524", accent2:"#FFFFFF", borderI:"#2A252C",
+    red:"#FF1524", orange:"#FF7A45", yellow:"#F5B342", green:"#96B08E",
+    cyan:"#9FC9D6", blue:"#8FB8C4", magenta:"#FF3D6E",
+    op:0.94, blur:"8px" },
+];
+
+const nvimCode = t => [
+  `<span class="ln">38</span><span style="color:${t.comment}"># theme wiring</span>`,
+  `<span class="ln">39</span><span style="color:${t.magenta}">let</span> theme = <span style="color:${t.green}">"${t.name}"</span>;`,
+  `<span class="ln">40</span><span style="color:${t.magenta}">in</span> {`,
+  `<span class="ln">41</span>  stylix.<span style="color:${t.blue}">base16Scheme</span> =`,
+  `<span class="ln">42</span>    <span style="color:${t.cyan}">./themes</span>/<span style="color:${t.yellow}">\${theme}</span>.yaml;`,
+  `<span class="ln">43</span>  stylix.<span style="color:${t.blue}">polarity</span> = <span style="color:${t.green}">"${t.tag.split(" ")[0]}"</span>;`,
+  `<span class="ln">44</span>  <span style="color:${t.orange}">opacity</span>.terminal = <span style="color:${t.red}">${t.op}</span>;`,
+  `<span class="ln">45</span>}`,
+].join("\n");
+
+const shellOut = t => [
+  `<span style="color:${t.accent}">❯</span> nixos-rebuild switch`,
+  `<span style="color:${t.comment}">building the system…</span>`,
+  `<span style="color:${t.green}">✓</span> 41 derivations built`,
+  `<span style="color:${t.yellow}">⚠</span> 2 warnings`,
+  `<span style="color:${t.red}">✗</span> 0 failures`,
+  `<span style="color:${t.cyan}">→</span> generation <b>142</b>`,
+  ``,
+  `<span style="color:${t.accent}">❯</span> <span style="color:${t.comment}">▏</span>`,
+].join("\n");
+
+const yaziRows = t => `
+  <div class="path">~/code/parker</div>
+  <div class="row"><span style="color:${t.blue}"> hosts/</span><span class="sz">dir</span></div>
+  <div class="row"><span style="color:${t.blue}"> system/</span><span class="sz">dir</span></div>
+  <div class="row sel"><span style="color:${t.blue}"> themes/</span><span class="sz">7 items</span></div>
+  <div class="row"><span style="color:${t.blue}"> home/</span><span class="sz">dir</span></div>
+  <div class="row"><span> flake.nix</span><span class="sz">2.1 KB</span></div>
+  <div class="row"><span> flake.lock</span><span class="sz">31 KB</span></div>
+  <div class="row"><span style="color:${t.green}"> DECISIONS.md</span><span class="sz">9.4 KB</span></div>
+  <div class="row"><span style="color:${t.comment}"> QUIRKS.md</span><span class="sz">3.2 KB</span></div>`;
+
+const nav = document.getElementById("nav");
+THEMES.forEach((t, i) => {
+  const b = document.createElement("button");
+  b.textContent = `${i + 1} ${t.name}`;
+  b.onclick = () => apply(i);
+  nav.appendChild(b);
+});
+
+function apply(i) {
+  const t = THEMES[i];
+  const d = document.getElementById("desktop").style;
+  d.setProperty("--wall1", t.wall1); d.setProperty("--wall2", t.wall2);
+  d.setProperty("--bg0", t.bg0); d.setProperty("--bg1", t.bg1);
+  d.setProperty("--bg2", t.bg2); d.setProperty("--bg3", t.bg3);
+  d.setProperty("--fg", t.fg); d.setProperty("--comment", t.comment);
+  d.setProperty("--barfg", t.barfg);
+  d.setProperty("--accent", t.accent); d.setProperty("--accent2", t.accent2);
+  d.setProperty("--border-i", t.borderI);
+  d.setProperty("--op", t.op); d.setProperty("--blur", t.blur);
+
+  document.getElementById("nvim").innerHTML = nvimCode(t);
+  document.getElementById("shell").innerHTML = shellOut(t);
+  document.getElementById("yazi").innerHTML = yaziRows(t);
+  document.getElementById("vsl-file").textContent = `themes/${t.name}.yaml · flake.nix`;
+  document.getElementById("meta-note").innerHTML = `<b>${t.name}</b> · ${t.tag} — ${t.note}`;
+  document.getElementById("meta-knobs").textContent = `opacity ${t.op} · blur ${t.blur}`;
+
+  document.getElementById("swatches").innerHTML =
+    [t.bg0, t.bg1, t.bg2, t.bg3, t.accent, t.accent2, t.red, t.orange, t.yellow, t.green, t.cyan, t.blue, t.magenta, t.fg]
+      .map(c => `<i style="background:${c}" title="${c}"></i>`).join("");
+
+  [...nav.children].forEach((b, j) => {
+    b.classList.toggle("on", j === i);
+    if (j === i) { b.style.setProperty("--pill-bg", t.accent); b.style.setProperty("--pill-fg", t.bg0); }
+  });
+}
+
+document.addEventListener("keydown", e => {
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= THEMES.length) apply(n - 1);
+});
+
+apply(2);
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+diff --git a/example.toml b/example.toml
+index 8fec459ee..87f186cda 100644
+--- a/example.toml
++++ b/example.toml
+@@ -400,6 +400,7 @@ launcher_position   = "none"       # none | start | end
+ launcher_icon       = "grid-dots"  # Tabler glyph name
+ active_monitor_only = false
+ pinned              = []            # e.g. ["firefox", "code", "kitty"]
++exclude             = []            # app ids show_running never appends, e.g. ["my-hud"]
+ 
+ # ── Desktop Widgets ───────────────────────────────────────────────────────────
+ 
+diff --git a/src/config/config_types.h b/src/config/config_types.h
+index 555e832b9..73dd02d10 100644
+--- a/src/config/config_types.h
++++ b/src/config/config_types.h
+@@ -598,6 +598,10 @@ struct DockConfig {
+   std::string launcherCustomImage = "";     // image path; overrides launcherIcon glyph when set
+   bool launcherCustomImageColorize = false; // tint the custom image with the icon color role
+   std::vector<std::string> pinned;          // desktop entry IDs to always show
++  // App ids never appended by show_running: matched case-insensitively against
++  // both the compositor app id and the desktop entry it resolves to. Pinning
++  // still wins — this only suppresses the running-apps tail.
++  std::vector<std::string> exclude;
+   std::vector<std::string> monitors;        // connector names to show on; empty = all outputs
+   bool operator==(const DockConfig&) const = default;
+ };
+diff --git a/src/config/schema/config_schema.cpp b/src/config/schema/config_schema.cpp
+index d5e03a9f5..8611249aa 100644
+--- a/src/config/schema/config_schema.cpp
++++ b/src/config/schema/config_schema.cpp
+@@ -1826,6 +1826,7 @@ namespace noctalia::config::schema {
+         pathStringField(&DockConfig::launcherCustomImage, "launcher_custom_image"),
+         field(&DockConfig::launcherCustomImageColorize, "launcher_custom_image_colorize"),
+         field(&DockConfig::pinned, "pinned"),
++        field(&DockConfig::exclude, "exclude"),
+         field(&DockConfig::monitors, "monitors"),
+     };
+     return s;
+diff --git a/src/shell/dock/dock.cpp b/src/shell/dock/dock.cpp
+index 5e4adfde1..455885bef 100644
+--- a/src/shell/dock/dock.cpp
++++ b/src/shell/dock/dock.cpp
+@@ -630,7 +630,7 @@ void Dock::syncInstances() {
+   const bool hasStaticContent = !cfg.pinned.empty() || shell::dock::dockLauncherButtonCount(cfg) > 0;
+   // When activeMonitorOnly is off, the running-apps check is identical for every output, so hoist it.
+   const bool anyRunningGlobal = (!hasStaticContent && cfg.showRunning && !cfg.activeMonitorOnly)
+-      ? !m_platform->runningAppIds(nullptr).empty()
++      ? !shell::dock::dockResolvedRunningApps(cfg, *m_platform, nullptr).empty()
+       : false;
+   const auto outputAllowed = [&](const WaylandOutput& output) {
+     if (!output.done || !output.hasUsableGeometry()) {
+@@ -648,7 +648,7 @@ void Dock::syncInstances() {
+       return false;
+     }
+     if (cfg.activeMonitorOnly) {
+-      return !m_platform->runningAppIds(output.output).empty();
++      return !shell::dock::dockResolvedRunningApps(cfg, *m_platform, output.output).empty();
+     }
+     return anyRunningGlobal;
+   };
+diff --git a/src/shell/dock/dock_model.cpp b/src/shell/dock/dock_model.cpp
+index 16787b6b0..2feb02dc7 100644
+--- a/src/shell/dock/dock_model.cpp
++++ b/src/shell/dock/dock_model.cpp
+@@ -8,6 +8,7 @@
+ #include "util/string_utils.h"
+ #include "wayland/wayland_toplevels.h"
+ 
++#include <algorithm>
+ #include <unordered_map>
+ 
+ namespace {
+@@ -83,6 +84,28 @@ namespace shell::dock {
+     return platform.windowsForApp(std::string(idLower), std::string(wmClassLower), outputFilter);
+   }
+ 
++  std::vector<app_identity::ResolvedRunningApp>
++  dockResolvedRunningApps(const DockConfig& cfg, const CompositorPlatform& platform, wl_output* outputFilter) {
++    if (!cfg.showRunning) {
++      return {};
++    }
++    auto resolved = app_identity::resolveRunningApps(platform.runningAppIds(outputFilter), desktopEntries());
++    if (cfg.exclude.empty()) {
++      return resolved;
++    }
++    // Match on the raw compositor app id as well as the entry it resolved to:
++    // a background window with no desktop file is named by its app id, one
++    // with a desktop file is more naturally named by that entry's id.
++    std::erase_if(resolved, [&cfg](const app_identity::ResolvedRunningApp& run) {
++      const std::string entryIdLower = StringUtils::toLower(run.entry.id);
++      return std::ranges::any_of(cfg.exclude, [&](const std::string& pattern) {
++        const std::string patternLower = StringUtils::toLower(pattern);
++        return !patternLower.empty() && (patternLower == run.runningLower || patternLower == entryIdLower);
++      });
++    });
++    return resolved;
++  }
++
+   DockSnapshot buildDockSnapshot(DockModelDependencies deps) {
+     DockSnapshot snapshot;
+     snapshot.output = deps.output;
+@@ -93,9 +116,7 @@ namespace shell::dock {
+     snapshot.activeAppIdLower =
+         (deps.config.activeMonitorOnly && activeOutput != deps.output) ? std::string{} : deps.globalActiveIdLower;
+ 
+-    const auto runningIds =
+-        deps.config.showRunning ? deps.platform.runningAppIds(snapshot.filterOutput) : std::vector<std::string>{};
+-    const auto resolvedRunning = app_identity::resolveRunningApps(runningIds, desktopEntries());
++    const auto resolvedRunning = dockResolvedRunningApps(deps.config, deps.platform, snapshot.filterOutput);
+ 
+     std::unordered_map<std::string, std::string> compositorIdByEntryId;
+     compositorIdByEntryId.reserve(resolvedRunning.size());
+diff --git a/src/shell/dock/dock_model.h b/src/shell/dock/dock_model.h
+index b83c44a15..58e3532fb 100644
+--- a/src/shell/dock/dock_model.h
++++ b/src/shell/dock/dock_model.h
+@@ -1,5 +1,6 @@
+ #pragma once
+ 
++#include "system/app_identity.h"
+ #include "system/desktop_entry.h"
+ 
+ #include <cstddef>
+@@ -49,6 +50,11 @@ namespace shell::dock {
+       const DockConfig& cfg, std::vector<std::string>& lastPinnedConfig, std::vector<DesktopEntry>& pinnedEntries,
+       std::uint64_t& modelSerial, std::uint64_t& entriesVersion
+   );
++  // Running apps the dock is willing to show: everything the compositor
++  // reports on `outputFilter`, minus config.exclude. The single place both the
++  // snapshot builder and the "is the dock empty?" checks agree on.
++  [[nodiscard]] std::vector<app_identity::ResolvedRunningApp>
++  dockResolvedRunningApps(const DockConfig& cfg, const CompositorPlatform& platform, wl_output* outputFilter);
+   [[nodiscard]] DockSnapshot buildDockSnapshot(DockModelDependencies deps);
+   [[nodiscard]] bool sameDockItemSet(const DockSnapshot& a, const DockSnapshot& b);
+   [[nodiscard]] std::vector<ToplevelInfo>

@@ -1,0 +1,18 @@
+scheme: "Blush"
+author: "peki & Claude (parker theme system — the garden, day)"
+base00: "FAF6F1" # default background
+base01: "F2ECE4" # lighter bg (status bars)
+base02: "EADFD6" # selection
+base03: "B3A79B" # comments
+base04: "857A6E" # dark foreground (status)
+base05: "57504A" # default foreground
+base06: "453F3A" # light foreground
+base07: "332E2A" # strongest foreground
+base08: "C97B7B" # red
+base09: "E8965A" # orange (spark)
+base0A: "D9B36A" # yellow
+base0B: "6FBF87" # green (spark)
+base0C: "7FB5A3" # cyan / sage
+base0D: "8FA3C7" # blue (dusty)
+base0E: "C77D9E" # magenta / rose
+base0F: "A98467" # brown

@@ -1,0 +1,18 @@
+scheme: "Glacier"
+author: "peki & Claude (parker theme system — the drift, day)"
+base00: "FFFFFF" # default background (pure white)
+base01: "F5F8FB" # lighter bg (status bars)
+base02: "EAEFF5" # selection
+base03: "8493A6" # comments
+base04: "5E7089" # dark foreground (status)
+base05: "25313F" # default foreground
+base06: "1C2733" # light foreground
+base07: "141C26" # strongest foreground
+base08: "D64550" # red (only warmth)
+base09: "55677D" # orange slot -> steel (cold by design)
+base0A: "B7912B" # yellow / cold gold
+base0B: "1E9E82" # green / cool teal
+base0C: "0E8FA6" # cyan
+base0D: "1E66D0" # blue (accent)
+base0E: "6259D6" # magenta / indigo
+base0F: "7A6A5C" # brown (muted cold)

@@ -1,0 +1,24 @@
+diff --git a/src/shell/bar/bar.cpp b/src/shell/bar/bar.cpp
+index 2789cd6..9d6c0b3 100644
+--- a/src/shell/bar/bar.cpp
++++ b/src/shell/bar/bar.cpp
+@@ -2791,10 +2791,19 @@ void Bar::syncBarSlideLayerTransform(BarInstance& instance) const {
+   }
+ }
+ 
++// A bar that paints no background has nothing to frost. The blur region below
++// is derived from the bg node's geometry, never from what is actually drawn,
++// so a fully transparent bar still hands the compositor a strip to blur — and
++// once the compositor implements ext-background-effect-v1 that strip shows up
++// as a smeared band across the wallpaper. Opacity 0 means "not there".
+ void Bar::applyBarCompositorBlur(BarInstance& instance) const {
+   if (instance.surface == nullptr) {
+     return;
+   }
++  if (instance.barConfig.backgroundOpacity <= 0.0f) {
++    instance.surface->clearBlurRegion();
++    return;
++  }
+   if (!barContentVisuallyShown(instance)) {
+     instance.surface->clearBlurRegion();
+     return;

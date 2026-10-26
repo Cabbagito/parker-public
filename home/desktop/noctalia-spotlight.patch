@@ -1,0 +1,248 @@
+diff --git a/src/config/config_types.h b/src/config/config_types.h
+index 5d296f7..4265acf 100644
+--- a/src/config/config_types.h
++++ b/src/config/config_types.h
+@@ -922,6 +922,9 @@ struct ShellConfig {
+     bool showIcons = true;
+     bool compact = false;
+     bool appGrid = false;
++    /// Spotlight mode: the launcher opens as a bare input strip (no results on
++    /// an empty query) and the visual card grows with the result list.
++    bool spotlight = false;
+     bool sortByUsage = true;
+     /// When true, refresh currency exchange rates from libqalculate's online sources.
+     bool fetchExchangeRates = true;
+diff --git a/src/config/schema/config_schema.cpp b/src/config/schema/config_schema.cpp
+index 953085c..3c752d3 100644
+--- a/src/config/schema/config_schema.cpp
++++ b/src/config/schema/config_schema.cpp
+@@ -1275,6 +1275,7 @@ namespace noctalia::config::schema {
+           field(&ShellConfig::LauncherConfig::showIcons, "show_icons"),
+           field(&ShellConfig::LauncherConfig::compact, "compact"),
+           field(&ShellConfig::LauncherConfig::appGrid, "app_grid"),
++          field(&ShellConfig::LauncherConfig::spotlight, "spotlight"),
+           field(&ShellConfig::LauncherConfig::sortByUsage, "sort_by_usage"),
+           field(&ShellConfig::LauncherConfig::fetchExchangeRates, "fetch_exchange_rates"),
+           field(&ShellConfig::LauncherConfig::providerPrefix, "provider_prefix"),
+diff --git a/src/shell/launcher/launcher_panel.cpp b/src/shell/launcher/launcher_panel.cpp
+index 20f463f..297a2ea 100644
+--- a/src/shell/launcher/launcher_panel.cpp
++++ b/src/shell/launcher/launcher_panel.cpp
+@@ -1292,32 +1292,37 @@ void LauncherPanel::onInputChanged(const std::string& text) {
+       // Query default providers (empty prefix), plus prefixed providers that opt into global search.
+       // Prefixed opt-in providers (e.g. Session) only contribute once the query is long enough,
+       // so opening the launcher with no/short input does not flood it with their entries.
+-      const bool allowGlobalOptIn =
+-          StringUtils::trimRightView(StringUtils::trimLeftView(queryText)).size() >= kGlobalOptInMinChars;
+-      for (auto& provider : m_providers) {
+-        const bool isDefault = provider->prefix().empty();
+-        if (!isDefault && (!provider->includeInGlobalSearch() || !allowGlobalOptIn)) {
+-          continue;
+-        }
+-        auto results = provider->query(queryText);
+-        if (provider->trackUsage()) {
+-          applyUsageBoost(results, *provider);
+-          if (sortByUsage && m_usageTracker.getRecentlyUsedCount(provider->id()) > 0) {
+-            hasRecentlyUsed = true;
++      // Spotlight mode: an empty (or whitespace) query queries no providers at
++      // all — the panel presents as a bare input strip until the user types.
++      const auto trimmedLen = StringUtils::trimRightView(StringUtils::trimLeftView(queryText)).size();
++      const bool spotlightIdle = spotlightEnabled() && trimmedLen == 0U;
++      const bool allowGlobalOptIn = trimmedLen >= kGlobalOptInMinChars;
++      if (!spotlightIdle) {
++        for (auto& provider : m_providers) {
++          const bool isDefault = provider->prefix().empty();
++          if (!isDefault && (!provider->includeInGlobalSearch() || !allowGlobalOptIn)) {
++            continue;
++          }
++          auto results = provider->query(queryText);
++          if (provider->trackUsage()) {
++            applyUsageBoost(results, *provider);
++            if (sortByUsage && m_usageTracker.getRecentlyUsedCount(provider->id()) > 0) {
++              hasRecentlyUsed = true;
++            }
++          }
++          for (auto& result : results) {
++            result.providerId = provider->id();
++          }
++          m_allResults.insert(
++              m_allResults.end(), std::make_move_iterator(results.begin()), std::make_move_iterator(results.end())
++          );
++          auto providerCats = provider->categories();
++          for (auto& cat : providerCats) {
++            newCategories.push_back(std::move(cat));
+           }
+         }
+-        for (auto& result : results) {
+-          result.providerId = provider->id();
+-        }
+-        m_allResults.insert(
+-            m_allResults.end(), std::make_move_iterator(results.begin()), std::make_move_iterator(results.end())
+-        );
+-        auto providerCats = provider->categories();
+-        for (auto& cat : providerCats) {
+-          newCategories.push_back(std::move(cat));
+-        }
++        sortResultsByScore(m_allResults);
+       }
+-      sortResultsByScore(m_allResults);
+     }
+   }
+ 
+@@ -1524,6 +1529,11 @@ void LauncherPanel::refreshResults() {
+   }
+   bindDetailResult();
+   applyEmptyState();
++  if (spotlightEnabled()) {
++    // The visual card tracks the result count (contentHeightHint) — have the
++    // manager re-run scene layout so the card grows/shrinks with this refresh.
++    PanelManager::instance().requestLayout();
++  }
+ }
+ 
+ void LauncherPanel::applyEmptyState() {
+@@ -1538,9 +1548,12 @@ void LauncherPanel::applyEmptyState() {
+     m_detailScroll->setVisible(detail);
+     m_detailScroll->setParticipatesInLayout(detail);
+   }
+-  m_emptyLabel->setVisible(empty);
+-  m_emptyLabel->setParticipatesInLayout(empty);
+-  if (empty) {
++  // Spotlight strip: an untyped empty state shows nothing below the input —
++  // not even the "type to search" hint.
++  const bool showEmptyLabel = empty && !(spotlightEnabled() && m_query.empty());
++  m_emptyLabel->setVisible(showEmptyLabel);
++  m_emptyLabel->setParticipatesInLayout(showEmptyLabel);
++  if (showEmptyLabel) {
+     m_emptyLabel->setText(
+         m_query.empty() ? i18n::tr("launcher.empty.type-to-search") : i18n::tr("launcher.empty.no-results")
+     );
+@@ -1551,6 +1564,43 @@ bool LauncherPanel::shouldUseDetailPresentation() const {
+   return m_results.size() == 1 && isDetailPresentation(m_results.front());
+ }
+ 
++bool LauncherPanel::spotlightEnabled() const {
++  // App-grid layouts keep the fixed card; spotlight is a list-mode look.
++  return m_config != nullptr && m_config->config().shell.launcher.spotlight
++      && !m_config->config().shell.launcher.appGrid;
++}
++
++float LauncherPanel::contentHeightHint() const {
++  if (!spotlightEnabled()) {
++    return 0.0f;
++  }
++  const float scale = contentScale();
++  const float inputH = Style::controlHeight * scale;
++  const float gap = Style::spaceSm * scale;
++  float hint = inputH;
++  if (m_categoryFilter != nullptr && m_categoryFilter->participatesInLayout()) {
++    hint += gap + Style::controlHeightSm * scale;
++  }
++  if (m_results.empty()) {
++    if (!m_query.empty()) {
++      // "no results" label row.
++      hint += gap + Style::fontSizeBody * scale * 2.5f;
++    }
++    return hint;
++  }
++  if (shouldUseDetailPresentation()) {
++    // Calculator/detail card: one roomy block below the input.
++    return hint + gap + 170.0f * scale;
++  }
++  float rowH = m_launcherRowHeight;
++  if (rowH <= 0.0f) {
++    rowH = launcherRowHeightEstimate(launcherListStyleFrom(m_config, scale, panelCardOpacity()));
++  }
++  constexpr std::size_t kMaxSpotlightRows = 10;
++  const auto rows = static_cast<float>(std::min(m_results.size(), kMaxSpotlightRows));
++  return hint + gap + rows * rowH + Style::spaceSm * scale;
++}
++
+ void LauncherPanel::bindDetailResult() {
+   if (!shouldUseDetailPresentation()
+       || m_detailScroll == nullptr
+diff --git a/src/shell/launcher/launcher_panel.h b/src/shell/launcher/launcher_panel.h
+index 0d5204f..ab438e3 100644
+--- a/src/shell/launcher/launcher_panel.h
++++ b/src/shell/launcher/launcher_panel.h
+@@ -56,6 +56,7 @@ public:
+ 
+   [[nodiscard]] float preferredWidth() const override { return scaled(560.0f); }
+   [[nodiscard]] float preferredHeight() const override { return scaled(500.0f); }
++  [[nodiscard]] float contentHeightHint() const override;
+   [[nodiscard]] LayerShellLayer layer() const override { return LayerShellLayer::Overlay; }
+   [[nodiscard]] LayerShellKeyboard keyboardMode() const override { return LayerShellKeyboard::Exclusive; }
+   [[nodiscard]] InputArea* initialFocusArea() const override;
+@@ -85,6 +86,7 @@ private:
+   void applyEmptyState();
+   void bindDetailResult();
+   [[nodiscard]] bool shouldUseDetailPresentation() const;
++  [[nodiscard]] bool spotlightEnabled() const;
+   [[nodiscard]] bool startsWithLauncherPrefix(std::string_view text) const;
+   void applyProviderConfig(LauncherProvider& provider) const;
+   void finishActivation(LauncherProvider& provider, const std::string& resultId, bool copied);
+diff --git a/src/shell/panel/panel.h b/src/shell/panel/panel.h
+index 2a35fce..5dba947 100644
+--- a/src/shell/panel/panel.h
++++ b/src/shell/panel/panel.h
+@@ -50,6 +50,11 @@ public:
+ 
+   [[nodiscard]] virtual float preferredWidth() const = 0;
+   [[nodiscard]] virtual float preferredHeight() const = 0;
++  // Spotlight-style panels: desired visual content height (excluding panel
++  // padding) for the current state, or 0 to keep the assigned surface height.
++  // The manager shrinks the drawn card and input region to this each layout
++  // pass; the layer surface itself is never resized. Detached panels only.
++  [[nodiscard]] virtual float contentHeightHint() const { return 0.0f; }
+   // Span the output's available extent on this axis (floating panels only). The
+   // surface is dual-anchored with a requested size of 0 so the compositor
+   // assigns the size, subtracting every exclusive zone on the output; the
+diff --git a/src/shell/panel/panel_manager.cpp b/src/shell/panel/panel_manager.cpp
+index 39b42db..fb3e02a 100644
+--- a/src/shell/panel/panel_manager.cpp
++++ b/src/shell/panel/panel_manager.cpp
+@@ -2294,7 +2294,23 @@ void PanelManager::buildScene(std::uint32_t width, std::uint32_t height) {
+   const auto panelX = static_cast<float>(m_panelInsetX);
+   const auto panelY = static_cast<float>(m_panelInsetY);
+   const float panelW = m_panelVisualWidth > 0 ? static_cast<float>(m_panelVisualWidth) : w;
+-  const float panelH = m_panelVisualHeight > 0 ? static_cast<float>(m_panelVisualHeight) : h;
++  float panelH = m_panelVisualHeight > 0 ? static_cast<float>(m_panelVisualHeight) : h;
++  // Spotlight-style content sizing: shrink the drawn card (and the input
++  // region) to the panel's content hint. The layer surface keeps its full
++  // assigned size; everything below the card stays fully transparent.
++  if (!m_attachedToBar) {
++    const float hint = m_activePanel->contentHeightHint();
++    if (hint > 0.0f) {
++      const float hintPad =
++          m_activePanel->hasDecoration() ? m_activePanel->contentScale() * Style::panelPadding : 0.0f;
++      panelH = std::min(panelH, hint + hintPad * 2.0f);
++      if (m_surface != nullptr) {
++        m_surface->setInputRegion({InputRect{
++            m_panelInsetX, m_panelInsetY, static_cast<int>(panelW), static_cast<int>(panelH)
++        }});
++      }
++    }
++  }
+   const float attachedRadius = m_attachedToBar ? Style::scaledRadiusXl(m_activePanel->contentScale()) : 0.0f;
+   const bool barIsVertical = m_attachedToBar && (m_attachedBarPosition == "left" || m_attachedBarPosition == "right");
+   // The bg extends past the body along the bar cross axis for concave-corner notches.
+@@ -2417,9 +2433,16 @@ void PanelManager::prepareFrame(bool needsUpdate, bool needsLayout) {
+     m_activePanel->update(*m_renderContext);
+   }
+   if (!needsSceneBuild && needsLayout) {
+-    UiPhaseScope layoutPhase(UiPhase::Layout);
+-    if (m_activePanel != nullptr) {
+-      m_activePanel->layout(*m_renderContext, m_contentWidth, m_contentHeight);
++    if (m_activePanel != nullptr && !m_attachedToBar && m_activePanel->contentHeightHint() > 0.0f) {
++      // Spotlight-style card sizing lives in buildScene's always-run tail;
++      // re-run it so the drawn card tracks the hint as results change. The
++      // node-creation half is guarded by m_sceneRoot, so this is sizing only.
++      buildScene(width, height);
++    } else {
++      UiPhaseScope layoutPhase(UiPhase::Layout);
++      if (m_activePanel != nullptr) {
++        m_activePanel->layout(*m_renderContext, m_contentWidth, m_contentHeight);
++      }
+     }
+     if (m_pointerInside) {
+       m_inputDispatcher.syncPointerHover();

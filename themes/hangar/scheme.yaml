@@ -1,0 +1,18 @@
+scheme: "Hangar"
+author: "peki & Claude (parker theme system — the forge, day)"
+base00: "FFFFFF" # default background
+base01: "F7F5F6" # lighter bg (status bars)
+base02: "ECE9EA" # selection
+base03: "948C8F" # comments
+base04: "6B6265" # dark foreground (status)
+base05: "2E2A2C" # default foreground
+base06: "242123" # light foreground
+base07: "1B191A" # strongest foreground
+base08: "E03E4B" # red (accent)
+base09: "D97E4E" # orange
+base0A: "C79A3B" # yellow
+base0B: "7A9973" # green (muted, diffs only)
+base0C: "4E97AE" # cyan / baby blue pop
+base0D: "5D93A8" # blue / baby blue
+base0E: "D65A78" # magenta
+base0F: "8C6A55" # brown

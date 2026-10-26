@@ -1,0 +1,18 @@
+scheme: "Velour"
+author: "peki & Claude (parker theme system — the garden, night)"
+base00: "201A1E" # default background
+base01: "2B2229" # lighter bg (status bars)
+base02: "362B32" # selection
+base03: "82737C" # comments
+base04: "A995A0" # dim foreground (status)
+base05: "D9CBD2" # default foreground
+base06: "E7DDE2" # light foreground
+base07: "F3ECEF" # brightest
+base08: "E08A8A" # red
+base09: "F0A878" # orange / peach
+base0A: "D9BC7F" # yellow / gold
+base0B: "8FD9A8" # green / mint (spark)
+base0C: "93C4BC" # cyan
+base0D: "92A8D1" # blue (dusty)
+base0E: "E394B0" # magenta / rose (accent)
+base0F: "A8827A" # brown

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet"><script src="parker-face.js"></script><style>
+body{margin:0;background:#07070a;font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;-webkit-font-smoothing:antialiased}
+a{color:#7aa2f7;text-decoration:none}a:hover{color:#a6c0fb}
+@keyframes caret{50%{opacity:0}}
+@keyframes beatIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+</style></helmet>
+
+<div style="padding:40px 44px 60px;color:#c9c7cd">
+
+<div style="display:flex;align-items:baseline;gap:14px;margin-bottom:4px"><span style="font:500 14px/1.2 'JetBrains Mono',monospace">the motion lab</span><span style="font:300 12px/1.4 'JetBrains Mono',monospace;color:rgba(201,199,205,.45)">the travel as a swarm, and streaming as a hybrid.</span></div>
+<div style="font:300 11px/1.6 'JetBrains Mono',monospace;color:rgba(201,199,205,.3);margin-bottom:20px">The travel is three phases now, and the middle one is always the same shape: <span style="color:rgba(201,199,205,.55)">fall onto the path → run a shared curve as a narrow stream → reform at the far end</span>. Nothing expands, and the crossing no longer depends on which face is on. Locked: the pose lerp stays exactly as it is; twist and the old in-box streak are cut.</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:26px;align-items:center;padding:14px 18px;margin-bottom:24px;border:1px solid rgba(255,255,255,.09);border-radius:6px;background:#0d0d11;font:400 11px/1 'JetBrains Mono',monospace">
+  <div style="display:flex;align-items:center;gap:9px"><span style="font-size:9.5px;letter-spacing:.14em;color:rgba(201,199,205,.3)">VIEW</span><span style="color:#7aa2f7">{{ view }}</span></div>
+  <div style="display:flex;align-items:center;gap:9px"><span onClick="{{ toDefault }}" style="padding:5px 9px;border-radius:4px;background:{{ vdBg }};color:{{ vdFg }};cursor:pointer">default</span><span onClick="{{ toSession }}" style="padding:5px 9px;border-radius:4px;background:{{ vsBg }};color:{{ vsFg }};cursor:pointer">session</span><span onClick="{{ toDeep }}" style="padding:5px 9px;border-radius:4px;background:{{ vpBg }};color:{{ vpFg }};cursor:pointer">deep</span></div>
+  <div style="display:flex;align-items:center;gap:9px;margin-left:auto"><span onClick="{{ toggle }}" style="padding:5px 12px;border-radius:4px;background:rgba(201,199,205,.08);cursor:pointer">{{ playLabel }}</span><span style="font-size:10px;color:rgba(201,199,205,.3)">steps one stop every 2.6s · never skips a stop, so every travel is a designed one</span></div>
+</div>
+
+<div style="font-size:9.5px;letter-spacing:.16em;color:rgba(201,199,205,.3);margin-bottom:14px">THE TRAVEL — ONE MOVE, THREE READINGS</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="position:relative;width:700px;height:400px;background:#101014;border:1px solid rgba(255,255,255,.08);border-radius:6px;overflow:hidden;--face-fg:#c9c7cd;--accent:#7aa2f7;--good:#9ece6a;--bad:#f7768e">
+      <parker-face stage="{{ view }}" travel="none" expression="idle" style="position:absolute;inset:0"></parker-face>
+      <div style="position:absolute;left:16px;bottom:12px;font-size:9px;letter-spacing:.1em;color:rgba(201,199,205,.2)">{{ viewUpper }}</div>
+    </div>
+    <div style="font:300 11px/1.5 'JetBrains Mono',monospace;color:rgba(201,199,205,.5);width:700px"><span style="color:#c9c7cd">linear</span> — today, and still fine: formation held, position eased. The reference to beat.</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="position:relative;width:700px;height:400px;background:#101014;border:1px solid rgba(255,255,255,.08);border-radius:6px;overflow:hidden;--face-fg:#c9c7cd;--accent:#7aa2f7;--good:#9ece6a;--bad:#f7768e">
+      <parker-face stage="{{ view }}" travel="river" expression="idle" style="position:absolute;inset:0"></parker-face>
+      <div style="position:absolute;left:16px;bottom:12px;font-size:9px;letter-spacing:.1em;color:rgba(201,199,205,.2)">{{ viewUpper }}</div>
+    </div>
+    <div style="font:300 11px/1.5 'JetBrains Mono',monospace;color:rgba(201,199,205,.5);width:700px"><span style="color:#c9c7cd">river</span> — the edge facing the destination goes first and runs that way, like sand off a ledge. Each dot's own spread is squeezed onto the path to about an eighth, and the run follows one shared curve — a control point bowed a fifth of the path length, downward on screen — so it arcs across rather than tracking a ruler. The trailing edge is still a whole face while the front is already running.</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="position:relative;width:700px;height:400px;background:#101014;border:1px solid rgba(255,255,255,.08);border-radius:6px;overflow:hidden;--face-fg:#c9c7cd;--accent:#7aa2f7;--good:#9ece6a;--bad:#f7768e">
+      <parker-face stage="{{ view }}" travel="grain" expression="idle" style="position:absolute;inset:0"></parker-face>
+      <div style="position:absolute;left:16px;bottom:12px;font-size:9px;letter-spacing:.1em;color:rgba(201,199,205,.2)">{{ viewUpper }}</div>
+    </div>
+    <div style="font:300 11px/1.5 'JetBrains Mono',monospace;color:rgba(201,199,205,.5);width:700px"><span style="color:#c9c7cd">grain</span> — the same three phases squeezed to a twentieth: nearly a single line of dots, a longer launch so it pours for most of the travel, per-dot speed variance and four trails each. Much tighter and drier than river. This is the one that reads as pouring.</div>
+  </div>
+</div>
+
+<div style="font-size:9.5px;letter-spacing:.16em;color:rgba(201,199,205,.3);margin:40px 0 14px">STREAMING, HYBRID — BLOCKS FADE, PROSE TYPES</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+  <div style="display:flex;flex-direction:column;gap:9px">
+    <div style="position:relative;width:1280px;height:720px;background:#101014;color:#c9c7cd;font:400 12px/1.55 'JetBrains Mono',monospace;overflow:hidden;border:1px solid rgba(255,255,255,.08);border-radius:6px;--face-fg:#c9c7cd;--accent:#7aa2f7;--good:#9ece6a;--bad:#f7768e">
+      <parker-face stage="session" expression="{{ streamFace }}" style="position:absolute;inset:0"></parker-face>
+      <div style="position:absolute;left:60px;top:470px;width:190px"><div style="font-size:9.5px;letter-spacing:.18em;color:rgba(201,199,205,.25)">WEARS</div><div style="margin-top:5px;font-size:26px;line-height:1.1;color:rgba(122,162,247,.9);letter-spacing:-.01em">{{ streamFace }}</div><div style="margin-top:9px;width:120px;height:1px;background:rgba(122,162,247,.35)"></div></div>
+      <div style="position:absolute;left:22px;bottom:12px;display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.1em;color:rgba(201,199,205,.16)"><span>DEFAULT</span><span style="width:20px;height:1px;background:rgba(201,199,205,.16)"></span><span style="color:#7aa2f7">SESSION</span><span style="width:20px;height:1px;background:rgba(201,199,205,.16)"></span><span>DEEP</span></div>
+      <div style="position:absolute;top:26px;right:36px;text-align:right;font-size:10px;line-height:1.9;color:rgba(201,199,205,.28)"><div>19:31 · thursday</div><div style="font-style:italic;color:rgba(201,199,205,.4)">head down, gpu warm</div><div style="margin-top:3px">cpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▅▃</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▂▁▁▁▁▁</span> 31% · gpu <span style="letter-spacing:1px;color:rgba(122,162,247,.75)">▇▇▇▇▅</span><span style="letter-spacing:1px;color:rgba(122,162,247,.2)">▃▂▁</span> 41%</div><div><span style="color:rgba(158,206,106,.75)">53°C in</span> · <span style="color:rgba(122,162,247,.75)">4°C out</span></div></div>
+
+      <div style="position:absolute;left:435px;right:0;top:0;bottom:0;padding:0 40px;display:flex;flex-direction:column">
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:15px;padding:56px 0 20px;width:100%;max-width:780px;margin:0 auto;overflow:hidden">
+          <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="4">
+            <div style="animation:beatIn 340ms ease-out both">
+              <sc-if value="{{ b.isUser }}" hint-placeholder-val="{{ true }}"><div style="background:rgba(122,162,247,.09);border-left:2px solid rgba(122,162,247,.55);padding:7px 12px;border-radius:3px">{{ b.text }}</div></sc-if>
+              <sc-if value="{{ b.isAct }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:baseline;gap:11px;font-size:11.5px;color:rgba(201,199,205,.45)"><span style="width:12px;color:{{ b.glyphColor }}">{{ b.glyph }}</span><span style="flex:1">{{ b.label }} <span style="color:rgba(201,199,205,.72)">{{ b.target }}</span></span><span style="font-size:10px;color:rgba(201,199,205,.28)">{{ b.meta }}</span></div></sc-if>
+              <sc-if value="{{ b.isCode }}" hint-placeholder-val="{{ true }}"><div style="border-left:1px solid rgba(122,162,247,.35);padding:2px 0 2px 14px"><div style="font-size:9.5px;letter-spacing:.14em;color:rgba(201,199,205,.28);margin-bottom:5px">NIX · HOME/DESKTOP/HYPRLAND.NIX</div><div style="font-size:12px;line-height:1.8;white-space:pre">general = {
+  <span style="color:#7aa2f7">border_size</span> = <span style="color:#9ece6a">2</span>;   <span style="color:rgba(201,199,205,.3)"># after the stylix target</span>
+};</div></div></sc-if>
+              <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;line-height:1.6">{{ b.text }}<span style="display:inline-block;width:8px;height:16px;background:{{ b.caret }};margin-left:2px;vertical-align:-3px;animation:{{ b.caretAnim }}"></span></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="width:100%;max-width:780px;margin:0 auto;height:1px;background:rgba(201,199,205,.08)"></div>
+        <div style="width:100%;max-width:780px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:16px 0 10px"><span style="color:rgba(122,162,247,.85)">›</span><span style="display:inline-block;width:8px;height:16px;background:rgba(122,162,247,.35)"></span></div>
+        <div style="width:100%;max-width:780px;margin:0 auto 30px;display:flex;gap:16px;font-size:10px;letter-spacing:.12em;color:rgba(201,199,205,.2)"><span style="color:rgba(247,118,142,.45)">ESC STOP</span><span>^K COMMANDS</span><span>^Y EARLIER</span><span>^SPACE DANCE</span><span>^± DEPTH</span></div>
+      </div>
+    </div>
+    <div style="font:300 11px/1.5 'JetBrains Mono',monospace;color:rgba(201,199,205,.5);width:1280px">Two registers, on purpose. <span style="color:#c9c7cd">Work and code arrive whole</span> — a ledger row or a fenced block is a fact, and typing it out would be theatre. <span style="color:#c9c7cd">Prose types</span>, with the caret at the head, and the caret dims and parks where a finished line ends. The face changes on the sentence, not the token.</div>
+  </div>
+
+  <div style="width:420px;background:#101014;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:24px;font:300 11.5px/1.7 'JetBrains Mono',monospace;color:rgba(201,199,205,.5)">
+    <div style="font-size:9.5px;letter-spacing:.16em;color:rgba(201,199,205,.3);margin-bottom:14px">HOW THE TRAVEL IS BUILT</div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div><span style="color:#c9c7cd">three phases, one shape.</span> Fall onto the path, run it, reform. The run is identical every time, so there is no pose-dependent jank to chase.</div>
+      <div><span style="color:#c9c7cd">no expansion.</span> The middle phase squeezes the face's own spread <i>down</i> onto the path instead of letting it bloom — river to an eighth, grain to a twentieth.</div>
+      <div><span style="color:#c9c7cd">the near edge leaves first.</span> Order is measured along the direction of travel, so heading left means the left edge dissolves and runs left.</div>
+      <div><span style="color:#c9c7cd">a curve, not a chord.</span> The run is a quadratic through one shared control point, so the whole stream arcs the same way; a slow perpendicular braid on top gives it a current.</div>
+      <div><span style="color:#c9c7cd">trails.</span> Past samples of the same dot, drawn only while it is running. River gets two, grain gets four.</div>
+      <div><span style="color:#c9c7cd">it still lands exactly.</span> Every dot's destination is its real place, so the face is whole the frame the travel ends — no reassembly step to get wrong.</div>
+    </div>
+    <div style="font-size:9.5px;letter-spacing:.16em;color:rgba(201,199,205,.3);margin:22px 0 12px">KNOBS</div>
+    <div style="font-size:11px;color:rgba(201,199,205,.42)">launch · squeeze · arc · braid · trails · shrink · duration (1.2s). river 0.50 / 0.12 / 0.20 / 1.5 / 2 / 0.18; grain 0.64 / 0.05 / 0.10 / 0.5 / 4 / 0.34. Deeper arc, other direction, longer — say which and I'll move it.</div>
+  </div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { vi: 0, i: 0, chars: 0, hold: 0, playing: true };
+
+  // The axis never skips a stop, so every travel is one of three designed
+  // moves: default↔session, session↔deep.
+  views = ['default', 'session', 'deep', 'session'];
+
+  script = [
+    { kind: 'user', text: 'why did the rebuild leave the borders off?' },
+    { kind: 'act', glyph: '▤', label: 'read', target: 'system/theming.nix', meta: '58 lines', face: 'skimming' },
+    { kind: 'text', text: 'Stylix and hyprland are both writing border_size. Mine loses.', face: 'deadpan' },
+    { kind: 'act', glyph: '$', label: 'ran', target: 'nixos-rebuild dry-activate', meta: '4.2s', face: 'digging' },
+    { kind: 'code', face: 'digging' },
+    { kind: 'text', text: 'Set it after the target and it holds. One line, and your borders come back.', face: 'smug' },
+  ];
+
+  componentDidMount() {
+    this.travel = setInterval(() => {
+      if (this.state.playing) this.setState((s) => ({ vi: (s.vi + 1) % this.views.length }));
+    }, 2600);
+    this.beat = setInterval(() => {
+      if (!this.state.playing) return;
+      this.setState((s) => this.advance(s));
+    }, 55);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.travel);
+    clearInterval(this.beat);
+  }
+
+  /// One tick of the transcript. Prose types; everything else lands whole and
+  /// then holds long enough to be read as its own beat.
+  advance(s) {
+    const step = this.script[s.i];
+    if (!step) return s.hold > 34 ? { i: 0, chars: 0, hold: 0 } : { hold: s.hold + 1 };
+    if (step.kind === 'text') {
+      if (s.chars < step.text.length) return { chars: Math.min(step.text.length, s.chars + 2) };
+      if (s.hold < 13) return { hold: s.hold + 1 };
+      return { i: s.i + 1, chars: 0, hold: 0 };
+    }
+    if (s.hold < 11) return { hold: s.hold + 1 };
+    return { i: s.i + 1, chars: 0, hold: 0 };
+  }
+
+  renderVals() {
+    const { i, chars } = this.state;
+    const view = this.views[this.state.vi];
+    const on = (t) => (t ? 'rgba(122,162,247,.18)' : 'transparent');
+    const fg = (t) => (t ? '#c9c7cd' : 'rgba(201,199,205,.4)');
+
+    const shown = this.script.slice(0, Math.min(i + 1, this.script.length));
+    const blocks = shown.map((step, n) => {
+      const live = n === i;
+      const typing = step.kind === 'text' && live && chars < step.text.length;
+      return {
+        key: `b${n}`,
+        isUser: step.kind === 'user',
+        isAct: step.kind === 'act',
+        isCode: step.kind === 'code',
+        isText: step.kind === 'text',
+        text: step.kind === 'text' && live ? step.text.slice(0, chars) : step.text,
+        glyph: step.glyph,
+        glyphColor: step.glyph === '$' ? 'rgba(122,162,247,.6)' : 'rgba(201,199,205,.3)',
+        label: step.label,
+        target: step.target,
+        meta: step.meta,
+        caret: typing ? 'rgba(122,162,247,.8)' : 'rgba(122,162,247,.3)',
+        caretAnim: typing ? 'caret .55s steps(1) infinite' : 'none',
+      };
+    });
+
+    const current = this.script[Math.min(i, this.script.length - 1)];
+    return {
+      view,
+      viewUpper: view.toUpperCase(),
+      blocks,
+      streamFace: i === 0 ? 'listening' : current.face || 'digging',
+      playLabel: this.state.playing ? '❙❙ PAUSE' : '▶ PLAY',
+      toggle: () => this.setState((s) => ({ playing: !s.playing })),
+      toDefault: () => this.setState({ vi: 0, playing: false }),
+      toSession: () => this.setState({ vi: 1, playing: false }),
+      toDeep: () => this.setState({ vi: 2, playing: false }),
+      vdBg: on(view === 'default'), vdFg: fg(view === 'default'),
+      vsBg: on(view === 'session'), vsFg: fg(view === 'session'),
+      vpBg: on(view === 'deep'), vpFg: fg(view === 'deep'),
+    };
+  }
+}
+</script>
+</body>
+</html>

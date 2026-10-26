@@ -1,0 +1,35 @@
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+                format_left   "{mode}  {tabs}"
+                format_center ""
+                format_right  "{datetime}"
+                format_space  " "
+
+                mode_normal  "#[fg=blue]NORMAL"
+                mode_locked  "#[fg=red]LOCKED"
+                mode_tmux    "#[fg=cyan]TMUX"
+                mode_tab     "#[fg=magenta]TAB"
+                mode_session "#[fg=red]SESSION"
+                mode_scroll  "#[fg=cyan]SCROLL"
+
+                tab_normal   "#[fg=#6C7086]{name}"
+                tab_active   "#[fg=cyan,bold]{name}"
+
+                tab_separator "#[fg=cyan] | "
+
+                datetime        "#[fg=#6C7086]{format}"
+                datetime_format "%H:%M:%S"
+                datetime_timezone "Europe/Vienna"
+
+                hide_frame_for_single_pane "true"
+                border_enabled "false"
+            }
+        }
+        children
+    }
+    tab name="ccc" {
+        pane borderless=true
+    }
+}

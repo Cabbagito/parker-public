@@ -1,0 +1,92 @@
+/* Every colour visage reads is set on <html> by lib/themes.js (applyTheme,
+ * which main.js calls before anything mounts): a theme's six colours and
+ * the ladder resolved from them. Components name a rung — var(--fg-45),
+ * var(--accent-80) — and never mix their own. The one value here is the
+ * ground for the instant before main.js runs: midnight's. */
+:root {
+  --bg: #101014;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root[data-shell='tauri'] * {
+  /* No pointer on parker's face. This lives here rather than in hyprland
+   * because hyprland's cursor knobs are all global (inactive_timeout,
+   * hide_on_key_press) — hiding it per-window from there means toggling
+   * global state on reveal and restoring it on hide, which strands an
+   * invisible cursor the moment anything in that dance fails. On Wayland
+   * the client owns the cursor image over its own surface, so `cursor:
+   * none` is exactly scoped and carries no state: visage is fullscreen on
+   * special:visage, so its surface is the whole screen while it is up, and
+   * the cursor is back the instant SUPER+P sends it away.
+   *
+   * Universal, not `html, body` — a `cursor: pointer` on a clickable child
+   * would otherwise win on specificity and blink the pointer back. Any new
+   * rule here that sets `cursor` is undoing this on purpose or by mistake.
+   *
+   * Tower only (`data-shell`, main.js). In a browser on giskard or the
+   * phone visage is one window among others, and a pointer that vanishes
+   * over it would be a bug, not a design. */
+  cursor: none;
+}
+
+/* JetBrains Mono for screens that do not have it: giskard and the phone get
+ * it from porthole (dist/fonts, copied in by the nix package). A separate
+ * family name rather than a second `src` on the same one, because a browser
+ * fetches a fallback face only when the family before it is missing — so the
+ * tower, which has the real one, never downloads these. */
+@font-face {
+  font-family: 'JetBrains Mono Web';
+  src: url('/fonts/JetBrainsMono-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono Web';
+  src: url('/fonts/JetBrainsMono-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono Web';
+  src: url('/fonts/JetBrainsMono-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono Web';
+  src: url('/fonts/JetBrainsMono-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  /* JetBrains Mono lands via fontconfig (system/fonts.nix) on the tower and
+   * via the web faces above everywhere else; the generic stack behind them
+   * holds the design if both are missing. Component type sizes are the
+   * redesign's own px values for the 2560-wide surface — this root size is
+   * only the fallback for anything unstyled. */
+  font-family: 'JetBrains Mono', 'JetBrains Mono Web', monospace;
+  font-size: 15px;
+  /* No ligatures. JetBrains Mono joins runs like `???`, `??` and some
+   * bracket pairs into single glyphs, and Chrome drew those blank: the box
+   * held "?????" and showed three empty cells and "??" (measured over CDP,
+   * Oct 2026; turning ligatures off fixed it on the spot). What you typed
+   * must be what you see. Inputs inherit this through `font: inherit`. */
+  font-variant-ligatures: none;
+}
+
+::selection {
+  background: var(--accent-40);
+}

@@ -1,0 +1,30 @@
+[package]
+name = "visage-porthole"
+version = "0.1.0"
+edition = "2021"
+description = "the porthole: parker's face, served over the tailnet to giskard and the phone"
+
+# The second frame on ../door. Everything the page can ask for is door's;
+# this crate only adds the gate, HTTP, fan-out and the page's files
+# (docs/visage/porthole/README.md).
+#
+# The crate is named for its family, the binary for what you call it.
+[[bin]]
+name = "porthole"
+path = "src/main.rs"
+
+[dependencies]
+visage-door = { path = "../door" }
+axum = "0.8"
+clap = { version = "4", features = ["derive"] }
+futures-util = "0.3"
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync", "time"] }
+tokio-stream = { version = "0.1", features = ["sync"] }
+tower-http = { version = "0.6", features = ["fs", "set-header"] }
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
+
+[profile.release]
+strip = true

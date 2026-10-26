@@ -1,0 +1,80 @@
+<svg viewBox="0 0 2560 1440" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C4D4E6"/>
+      <stop offset="1" stop-color="#DCE6F0"/>
+    </linearGradient>
+    <linearGradient id="ice" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FAFCFD"/>
+      <stop offset="0.55" stop-color="#F2F6FA"/>
+      <stop offset="1" stop-color="#E9EFF6"/>
+    </linearGradient>
+    <radialGradient id="sunhalo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FDFEFE" stop-opacity="0.95"/>
+      <stop offset="0.5" stop-color="#F4F8FB" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#F4F8FB" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.22  0 0 0 0 0.26  0 0 0 0 0.32  0 0 0 0.045 0"/>
+    </filter>
+  </defs>
+
+  <rect width="2560" height="300" fill="url(#sky)"/>
+  <circle cx="2080" cy="140" r="260" fill="url(#sunhalo)"/>
+  <circle cx="2080" cy="140" r="74" fill="#F7FAFC"/>
+
+  <polygon points="0,300 240,236 470,286 730,252 980,300" fill="#CBD9E8"/>
+  <polygon points="1350,300 1600,258 1830,290 2080,266 2360,296 2560,272 2560,300" fill="#D2DEEB"/>
+  <polygon points="380,300 560,268 760,300" fill="#C0D0E2"/>
+
+  <rect y="300" width="2560" height="1140" fill="url(#ice)"/>
+  <line x1="0" y1="300" x2="2560" y2="300" stroke="#C9D7E6" stroke-width="3"/>
+
+  <g stroke="#E3EAF3" stroke-width="3" fill="none">
+    <path d="M 300 760 L 1240 706 L 2120 780"/>
+    <path d="M 620 520 L 1460 556 L 2320 512"/>
+    <path d="M 1240 706 L 1180 940"/>
+  </g>
+
+  <g fill="none" stroke-linejoin="round">
+    <path d="M 0 1160 L 270 1104 L 352 1236 L 640 1196 L 806 1330 L 1120 1300" stroke="#8FB8C4" stroke-width="6"/>
+    <path d="M 0 1190 L 262 1136 L 348 1262 L 628 1224" stroke="#C7D7E4" stroke-width="3"/>
+    <path d="M 2560 960 L 2374 1004 L 2306 1118 L 2380 1230" stroke="#A5C2D2" stroke-width="5"/>
+  </g>
+
+  <ellipse cx="1980" cy="1256" rx="264" ry="70" fill="#CFE2EE"/>
+  <ellipse cx="1954" cy="1250" rx="176" ry="42" fill="#AECBDD"/>
+
+  <g stroke="#E4EBF2" stroke-width="3" fill="none">
+    <path d="M 1450 1380 q 90 -22 180 -6"/>
+    <path d="M 1250 1416 q 110 -26 220 -8"/>
+    <path d="M 560 1400 q 80 -20 160 -4"/>
+  </g>
+
+  <g>
+    <line x1="2470" y1="600" x2="2470" y2="1070" stroke="#7C93AC" stroke-width="6"/>
+    <g fill="#8FB8C4">
+      <rect x="2478" y="640" width="26" height="7"/>
+      <rect x="2478" y="700" width="26" height="7"/>
+      <rect x="2478" y="760" width="26" height="7"/>
+      <rect x="2478" y="880" width="26" height="7"/>
+      <rect x="2478" y="940" width="26" height="7"/>
+      <rect x="2478" y="1000" width="26" height="7"/>
+    </g>
+    <rect x="2478" y="820" width="26" height="7" fill="#1E66D0"/>
+  </g>
+
+  <g>
+    <line x1="352" y1="632" x2="352" y2="800" stroke="#55677D" stroke-width="5"/>
+    <polygon points="352,632 448,660 352,690" fill="#1E66D0"/>
+    <ellipse cx="366" cy="806" rx="34" ry="8" fill="#DDE6EF"/>
+  </g>
+
+  <g stroke="#D5DFEA" stroke-width="2" fill="none">
+    <path d="M 120 980 L 210 962 L 258 1010"/>
+    <path d="M 1560 880 L 1640 902"/>
+  </g>
+
+  <rect width="2560" height="1440" filter="url(#grain)"/>
+</svg>

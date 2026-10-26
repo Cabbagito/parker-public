@@ -1,0 +1,18 @@
+scheme: "Trench"
+author: "peki & Claude (parker theme system — the drift, night)"
+base00: "1C1B2E" # default background (violet navy)
+base01: "262441" # lighter bg (status bars)
+base02: "302D50" # selection
+base03: "5C5C81" # comments
+base04: "8A8FB8" # dim foreground (status)
+base05: "CBD8F0" # default foreground
+base06: "DEE7F7" # light foreground
+base07: "EEF3FB" # brightest
+base08: "FF6E7F" # red / coral
+base09: "FFB378" # orange
+base0A: "EFC078" # yellow
+base0B: "62D196" # green / challenger mint
+base0C: "63F2F1" # cyan / challenger electric (accent 2)
+base0D: "6FA8FF" # blue (accent)
+base0E: "9A7CFF" # magenta / electric violet
+base0F: "C08F70" # brown
