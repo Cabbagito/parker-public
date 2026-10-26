@@ -9,9 +9,9 @@ that runs on it. The machine, this repo and the agent are all called parker.
 
 ## What's here
 
-- **The OS.** A NixOS flake for one machine: Hyprland, noctalia, Stylix
-  theming with day and night presets, nvim, zellij, ghostty, gaming and
-  emulation, fan curves.
+- **The OS.** A NixOS flake for one machine: Hyprland with no status bar,
+  noctalia, Stylix theming with day and night presets, ghostty, zellij and
+  nvim, gaming and emulation, fan curves and the cooler's LCD.
 - **parker, the agent.** `parkerd` is a Rust CLI that reads the machine
   (focused window, what's playing, CPU, GPU, temperatures) and acts on it
   (notifications, screenshots, volume, workspaces, the face). It is exposed
@@ -20,6 +20,45 @@ that runs on it. The machine, this repo and the agent are all called parker.
 - **visage, the face.** A Tauri + Svelte app that shows parker's face and the
   conversation. The same page is also served over Tailscale (the porthole),
   so it works from a laptop or a phone.
+
+## The desktop
+
+<p align="center">
+  <img src="docs/readme/desktop.jpg" width="960" alt="Hyprland with three tiled terminals: nvim on the Hyprland config, fastfetch, and yazi in the themes directory, over the redline wallpaper">
+</p>
+
+Hyprland, tiling. A lone window floats with a wide margin; more windows tile.
+There is no status bar: noctalia provides the launcher, notifications, lock
+screen and a dock that stays hidden until the pointer reaches the bottom
+edge, and the settings a bar would hold are in visage (below).
+
+<p align="center">
+  <img src="docs/readme/terminal.jpg" width="960" alt="ghostty running zellij: a tab bar of term, edit, ai, git, files, sys and zen, with fastfetch in the first tab">
+</p>
+
+ghostty runs zellij with one tab per job: a shell, nvim, Claude Code,
+lazygit, yazi, btop, and zen, a tab that renders a short generated note.
+
+<p align="center">
+  <img src="docs/readme/themes.jpg" width="960" alt="six wallpapers in three pairs, each with its colour palette">
+</p>
+
+Three theme families, each a day and a night preset with its own wallpaper.
+Stylix applies the palette across the system: terminal, editor, GTK and Qt,
+window borders, wallpaper. `theme light|dark|auto` flips between day and
+night in seconds, on a schedule by default; `theme set` picks another
+family and rebuilds.
+
+Also in the flake:
+
+- **Gaming.** Steam with GE-Proton; Heroic and umu for games outside Steam;
+  Slippi for Melee, with GameCube adapter support; PCSX2 and RPCS3.
+- **Cooling.** CoolerControl runs the fan curves from boot, keyed to the
+  liquid temperature. The AIO's pump LCD plays a looping animation in the
+  face's style.
+- **Install.** disko lays out the disks (btrfs subvolumes), and
+  [docs/RUNBOOK.md](docs/RUNBOOK.md) walks through an install from this
+  flake.
 
 ## visage
 
@@ -64,16 +103,6 @@ The 37 expressions. parker picks them himself; nothing else sets the face.
 </p>
 
 visage has ten colour themes of its own, separate from the desktop's.
-
-## The desktop
-
-<p align="center">
-  <img src="docs/readme/themes.jpg" width="960" alt="six wallpapers in three pairs, each with its colour palette">
-</p>
-
-Three theme families, each a day and a night preset with its own wallpaper.
-`theme` switches between them, and Stylix applies the palette across the
-system.
 
 ## Layout
 
